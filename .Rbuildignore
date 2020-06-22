@@ -4,3 +4,4 @@ experiments
 
 ^LICENSE\.md$
 ^README\.Rmd$
+^\.github$
