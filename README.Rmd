@@ -11,6 +11,7 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
+set.seed(1)
 ```
 
 # einsum
@@ -86,5 +87,7 @@ tensor::tensor(tensor::tensor(arr1, arr2, alongA = 3, alongB = 1), arr3, alongA 
 
 
 
+# Credit
 
+This package is inspired by the equivalent function in [NumPy](https://numpy.org/doc/stable/reference/generated/numpy.einsum.html).
 
