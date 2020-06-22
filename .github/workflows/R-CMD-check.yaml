@@ -78,3 +78,11 @@ jobs:
         with:
           name: ${{ runner.os }}-r${{ matrix.config.r }}-results
           path: check
+
+      - name: Test coverage
+        if: matrix.config.os == 'macOS-latest' && matrix.config.r == 'release'
+        run: |
+          install.packages("covr")
+          covr::codecov(type = "all", token = "${{secrets.CODECOV_TOKEN}}")
+        shell: Rscript {0}
+

@@ -8,3 +8,4 @@ experiments
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^codecov\.yml$

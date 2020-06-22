@@ -7,6 +7,8 @@
 
 [![R build
 status](https://github.com/const-ae/einsum/workflows/R-CMD-check/badge.svg)](https://github.com/const-ae/einsum/actions)
+[![Codecov test
+coverage](https://codecov.io/gh/const-ae/einsum/branch/master/graph/badge.svg)](https://codecov.io/gh/const-ae/einsum?branch=master)
 <!-- badges: end -->
 
 Einstein summation is a concise mathematical notation that implicitly
