@@ -3,12 +3,12 @@
 einsum <- function(equation_string, ...){
 
   objects <- list(...)
+  objects <- lapply(objects, as.array)
   tmp <- stringr::str_split_fixed(equation_string, "->", n = 2)
   result_string <- tmp[1,2]
   lhs_strings <- tmp[1,1]
   strings <- unlist(stringr::str_split(lhs_strings, ","))
   einsum_impl(strings, result_string, objects)
-
 
 }
 
@@ -34,7 +34,12 @@ einsum_impl <- function(strings, result_string, arrays){
 
 
   # Initialize memory for result
-  res <- array(0, dim = unname(lengths_vec[result_string_vec]))
+  if(length(result_string_vec) == 0){
+    # array cannot handle empty dim aka zero dimensional array aka scalar
+    res <- array(0)
+  }else{
+    res <- array(0, dim = unname(lengths_vec[result_string_vec]))
+  }
 
   # have a simple index running through all elements of res
   for(out_idx in seq_len(prod(lengths_vec[result_string_vec]))-1){
@@ -63,7 +68,7 @@ get_lengths_vec <- function(strings, objects){
 
 pos2idx_gen <- function(str, lengths){
   str_vec <- unlist(stringr::str_split(str, ""))
-  length_lookup <- c(1, cumprod(lengths[str_vec])[seq_len(length(str_vec)-1)])
+  length_lookup <- c(1, cumprod(lengths[str_vec]))[seq_len(length(str_vec))]
   function(pos){
     stopifnot(all(pos[str_vec] < lengths[str_vec]))
     sum(pos[str_vec] * length_lookup)
@@ -72,10 +77,10 @@ pos2idx_gen <- function(str, lengths){
 
 idx2pos_gen <- function(str, lengths){
   str_vec <- unlist(stringr::str_split(str, ""))
-  length_lookup <- c(1, cumprod(lengths[str_vec])[seq_len(length(str_vec)-1)])
+  length_lookup <- c(1, cumprod(lengths[str_vec]))[seq_len(length(str_vec))]
   length_lookup <- setNames(length_lookup, str_vec)
   function(idx){
-    res <- sapply(str_vec, function(s) floor(idx / length_lookup[s]) %% lengths[s])
+    res <- vapply(str_vec, function(s) floor(idx / length_lookup[s]) %% lengths[s], FUN.VALUE = 0.0)
     setNames(res, str_vec)
   }
 }
