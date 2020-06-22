@@ -35,10 +35,10 @@
 #'
 #'
 #' The function and the conventions are inspired by the \code{einsum()} function
-#' in NumPy (\link[https://numpy.org/doc/stable/reference/generated/numpy.einsum.html]{documentation}).
-#' Unlike NumPy, 'einsum' only supports the explicit mode. It is more flexible and
-#' can avoid some confusion. This means that the simple rule of the Einstein
-#' summation "sum over duplicated indices" is inaccurate. Instead the rule is
+#' in NumPy (\href{https://numpy.org/doc/stable/reference/generated/numpy.einsum.html}{documentation}).
+#' Unlike NumPy, 'einsum' only supports the explicit mode. The explict mode is more flexible and
+#' can avoid confusion. The common summary of the Einstein  summation to
+#' "sum over duplicated indices" however is not a good mental model. A better rule of thumb is
 #' "sum over all indices not in the result".
 #'
 #' \emph{Note:} This function is implemented in pure R with a few for loops. Do not expect
