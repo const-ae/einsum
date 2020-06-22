@@ -29,7 +29,7 @@
 #'   \code{"ij->ji"}` \tab \mjseqn{ Y = A^{T}  } \tab Transpose \cr
 #'   \code{"ii->i"} \tab \mjseqn{y = \text{diag}(A)} \tab Diagonal \cr
 #'   \code{"ii->ii"} \tab \mjseqn{Y = \text{diag}(A) I} \tab Diagonal times Identity  \cr
-#'   \code{"ii->"} \tab \mjseqn{y = \text{trace}(A) = \sum_i{A_{i}} } \tab Trace \cr
+#'   \code{"ii->"} \tab \mjseqn{y = \text{trace}(A) = \sum_i{A_{ii}} } \tab Trace \cr
 #'   \code{"ijk,mjj->i"} \tab \mjseqn{ y_i = \sum_{j}\sum_{k}\sum_{m}A_{ijk}B_{mjj}  } \tab Complex 3D operation  \cr
 #' }
 #'
