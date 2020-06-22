@@ -48,3 +48,34 @@ test_that("basic matrix operations work", {
   expect_equal(einsum("ijb,ijb->b", arr1, arr1), np$einsum("ijb,ijb->b", arr1, arr1))
 
 })
+
+
+test_that("einsum can handle whitespace in equation_string", {
+  mat1 <- matrix(rnorm(n = 4 * 8), nrow = 4, ncol = 8)
+  mat2 <- matrix(rnorm(n = 8 * 3), nrow = 8, ncol = 3)
+
+  expect_equal(einsum("ij,j k -> ik", mat1, mat2), mat1 %*% mat2)
+})
+
+
+
+test_that("einsum gives appropriate error messages", {
+  mat1 <- matrix(rnorm(n = 4 * 8), nrow = 4, ncol = 8)
+  mat2 <- matrix(rnorm(n = 8 * 3), nrow = 8, ncol = 3)
+
+  # j is 8 and 3
+  expect_error(einsum("ij,jj -> ik", mat1, mat2))
+
+  # more arrays than elements in the lhs
+  expect_error(einsum("ij,jj -> ik", mat1, mat2, mat1))
+
+  # length(dim(array)) does not match number of indices
+  expect_error(einsum("ij,jk -> ik", mat1, 1:5))
+
+  # Invalid character in equation_string
+  expect_error(einsum("ij,jk -> i3k", mat1, mat2))
+  expect_error(einsum("ij,j$k -> ik", mat1, mat2))
+
+})
+
+

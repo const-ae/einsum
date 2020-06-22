@@ -85,12 +85,14 @@ einsum <- function(equation_string, ...){
   objects <- list(...)
   objects <- lapply(objects, as.array)
   equation_string <- gsub("\\s", "", equation_string)
+
   tmp <- strsplit(equation_string, "->")[[1]]
   result_string <- if(length(tmp) == 1) ""
   else if(length(tmp) == 2) tmp[2]
   else stop("the equation string contains more than one '->': ", equation_string)
   lhs_strings <- tmp[1]
   strings <- unlist(strsplit(lhs_strings, ","))
+  if(any(grepl("[^a-zA-Z]", strings)) || grepl("[^a-zA-Z]", result_string)) stop("'equation_string' contains a non alphabetical (a-z and A-Z) character.")
   einsum_impl(strings, result_string, objects)
 
 }
@@ -99,8 +101,10 @@ einsum <- function(equation_string, ...){
 
 
 einsum_impl <- function(strings, result_string, arrays){
-  stopifnot(length(strings) == length(arrays))
-  stopifnot(all(nchar(strings) == vapply(arrays, function(a)length(dim(a)), 0.0)))
+  stopifnot("The number of strings on the left-hand side does not match the number of arrays" =
+              length(strings) == length(arrays))
+  stopifnot("Number of dimensions of array does not match the number of indices" =
+              all(nchar(strings) == vapply(arrays, function(a)length(dim(a)), 0.0)))
   result_string_vec <- strsplit(result_string, "")[[1]]
   sum_string_vec <- setdiff(unique(unlist(strsplit(strings, ""))), result_string_vec)
 
@@ -144,13 +148,20 @@ get_lengths_vec <- function(strings, objects){
   lengths <- numeric(length(unique(keys)))
   names(lengths) <- unique(keys)
   for(key in unique(keys)){
-    lengths[key] <- values[which(keys == key)[1]]
+    pos_values <- values[which(keys == key)]
+    if(any(pos_values != pos_values[1])){
+      stop("The length for index '", key, "' differ: ", paste0(unique(pos_values), collapse = ", "), "\n",
+           "Dimensions with the same index must have the same length.")
+    }
+    lengths[key] <- pos_values[1]
   }
   lengths
 }
 
 pos2idx_gen <- function(str, lengths){
   str_vec <- unlist(strsplit(str, ""))
+  stopifnot("Result string contains index that does not appear on the left-hand side" =
+              all(str_vec %in% names(lengths)))
   length_lookup <- c(1, cumprod(lengths[str_vec]))[seq_len(length(str_vec))]
   function(pos){
     stopifnot(all(pos[str_vec] < lengths[str_vec]))
@@ -160,6 +171,8 @@ pos2idx_gen <- function(str, lengths){
 
 idx2pos_gen <- function(str, lengths){
   str_vec <- unlist(strsplit(str, ""))
+  stopifnot("Result string contains index that does not appear on the left-hand side" =
+              all(str_vec %in% names(lengths)))
   length_lookup <- c(1, cumprod(lengths[str_vec]))[seq_len(length(str_vec))]
   names(length_lookup) <- str_vec
   function(idx){
