@@ -85,10 +85,12 @@ einsum <- function(equation_string, ...){
   objects <- list(...)
   objects <- lapply(objects, as.array)
   equation_string <- gsub("\\s", "", equation_string)
-  tmp <- stringr::str_split_fixed(equation_string, "->", n = 2)
-  result_string <- tmp[1,2]
-  lhs_strings <- tmp[1,1]
-  strings <- unlist(stringr::str_split(lhs_strings, ","))
+  tmp <- strsplit(equation_string, "->")[[1]]
+  result_string <- if(length(tmp) == 1) ""
+  else if(length(tmp) == 2) tmp[2]
+  else stop("the equation string contains more than one '->': ", equation_string)
+  lhs_strings <- tmp[1]
+  strings <- unlist(strsplit(lhs_strings, ","))
   einsum_impl(strings, result_string, objects)
 
 }
@@ -98,9 +100,9 @@ einsum <- function(equation_string, ...){
 
 einsum_impl <- function(strings, result_string, arrays){
   stopifnot(length(strings) == length(arrays))
-  stopifnot(all(stringr::str_length(strings) == vapply(arrays, function(a)length(dim(a)), 0.0)))
-  result_string_vec <- stringr::str_split(result_string, "")[[1]]
-  sum_string_vec <- setdiff(unique(unlist(stringr::str_split(strings, ""))), result_string_vec)
+  stopifnot(all(nchar(strings) == vapply(arrays, function(a)length(dim(a)), 0.0)))
+  result_string_vec <- strsplit(result_string, "")[[1]]
+  sum_string_vec <- setdiff(unique(unlist(strsplit(strings, ""))), result_string_vec)
 
   # Get the lengths of the indices as a named vector
   lengths_vec <- get_lengths_vec(strings, arrays)
@@ -137,7 +139,7 @@ einsum_impl <- function(strings, result_string, arrays){
 
 
 get_lengths_vec <- function(strings, objects){
-  keys <- unlist(stringr::str_split(strings, ""))
+  keys <- unlist(strsplit(strings, ""))
   values <- unlist(lapply(objects, dim))
   lengths <- numeric(length(unique(keys)))
   names(lengths) <- unique(keys)
@@ -148,7 +150,7 @@ get_lengths_vec <- function(strings, objects){
 }
 
 pos2idx_gen <- function(str, lengths){
-  str_vec <- unlist(stringr::str_split(str, ""))
+  str_vec <- unlist(strsplit(str, ""))
   length_lookup <- c(1, cumprod(lengths[str_vec]))[seq_len(length(str_vec))]
   function(pos){
     stopifnot(all(pos[str_vec] < lengths[str_vec]))
@@ -157,7 +159,7 @@ pos2idx_gen <- function(str, lengths){
 }
 
 idx2pos_gen <- function(str, lengths){
-  str_vec <- unlist(stringr::str_split(str, ""))
+  str_vec <- unlist(strsplit(str, ""))
   length_lookup <- c(1, cumprod(lengths[str_vec]))[seq_len(length(str_vec))]
   length_lookup <- setNames(length_lookup, str_vec)
   function(idx){
