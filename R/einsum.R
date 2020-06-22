@@ -161,9 +161,10 @@ pos2idx_gen <- function(str, lengths){
 idx2pos_gen <- function(str, lengths){
   str_vec <- unlist(strsplit(str, ""))
   length_lookup <- c(1, cumprod(lengths[str_vec]))[seq_len(length(str_vec))]
-  length_lookup <- setNames(length_lookup, str_vec)
+  names(length_lookup) <- str_vec
   function(idx){
     res <- vapply(str_vec, function(s) floor(idx / length_lookup[s]) %% lengths[s], FUN.VALUE = 0.0)
-    setNames(res, str_vec)
+    names(res) <- str_vec
+    res
   }
 }
