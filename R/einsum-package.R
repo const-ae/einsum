@@ -11,3 +11,18 @@
 #' @docType  package
 #' @name einsum_package
 NULL
+
+
+
+
+
+## usethis namespace: start
+#' @importFrom Rcpp sourceCpp
+## usethis namespace: end
+NULL
+
+
+## usethis namespace: start
+#' @useDynLib einsum, .registration = TRUE
+## usethis namespace: end
+NULL
