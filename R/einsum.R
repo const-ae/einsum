@@ -81,9 +81,8 @@
 #'
 #' @export
 einsum <- function(equation_string, ...){
-
-  objects <- list(...)
-  objects <- lapply(objects, as.array)
+  arrays <- list(...)
+  arrays <- lapply(arrays, as.array)
   equation_string <- gsub("\\s", "", equation_string)
 
   tmp <- strsplit(equation_string, "->")[[1]]
@@ -93,53 +92,30 @@ einsum <- function(equation_string, ...){
   lhs_strings <- tmp[1]
   strings <- unlist(strsplit(lhs_strings, ","))
   if(any(grepl("[^a-zA-Z]", strings)) || grepl("[^a-zA-Z]", result_string)) stop("'equation_string' contains a non alphabetical (a-z and A-Z) character.")
-  einsum_impl(strings, result_string, objects)
 
-}
-
-
-
-
-einsum_impl <- function(strings, result_string, arrays){
   stopifnot("The number of strings on the left-hand side does not match the number of arrays" =
               length(strings) == length(arrays))
   stopifnot("Number of dimensions of array does not match the number of indices" =
               all(nchar(strings) == vapply(arrays, function(a)length(dim(a)), 0.0)))
+
   result_string_vec <- strsplit(result_string, "")[[1]]
-  sum_string_vec <- setdiff(unique(unlist(strsplit(strings, ""))), result_string_vec)
+  string_vec <- strsplit(strings, "")
 
   # Get the lengths of the indices as a named vector
   lengths_vec <- get_lengths_vec(strings, arrays)
+  lengths_vec <- lengths_vec[order(names(lengths_vec))]
 
-  # Make converters for output
-  out_pos2idx <- pos2idx_gen(result_string, lengths_vec)
-  out_idx2pos <- idx2pos_gen(result_string, lengths_vec)
+  all_vars <- sort(unique(unlist(string_vec)))
+  array_vars_list <- lapply(string_vec, function(st){
+    vapply(st, function(s) which(all_vars == s) - 1L, FUN.VALUE = 0L)
+  })
+  result_vars_vec <-  vapply(result_string_vec, function(s) which(all_vars == s) - 1L, FUN.VALUE = 0L)
+  not_result_vars_vec <- setdiff(seq_along(all_vars) - 1L, result_vars_vec)
 
-  # Mke converters for summing variables
-  sum_idx2pos <- idx2pos_gen(sum_string_vec, lengths_vec)
-  arr_pos2idx_list <- lapply(strings, function(str)pos2idx_gen(str, lengths_vec))
+  einsum_impl_fast(lengths_vec, array_vars_list, not_result_vars_vec, result_vars_vec, arrays)
 
-
-  # Initialize memory for result
-  if(length(result_string_vec) == 0){
-    # array cannot handle empty dim aka zero dimensional array aka scalar
-    res <- array(0)
-  }else{
-    res <- array(0, dim = unname(lengths_vec[result_string_vec]))
-  }
-
-  # have a simple index running through all elements of res
-  for(out_idx in seq_len(prod(lengths_vec[result_string_vec]))-1){
-    out_pos <- out_idx2pos(out_idx)
-    s <- 0
-    for(sum_idx in seq_len(prod(lengths_vec[sum_string_vec]))-1){
-      sum_pos <- c(out_pos, sum_idx2pos(sum_idx))
-      s <- s + Reduce(`*`, vapply(seq_along(arrays), function(i)arrays[[i]][arr_pos2idx_list[[i]](sum_pos) + 1], FUN.VALUE = 0.0))
-    }
-    res[out_pos2idx(out_pos) + 1] <- s
-  }
-  res
 }
+
 
 
 get_lengths_vec <- function(strings, objects){
@@ -158,26 +134,3 @@ get_lengths_vec <- function(strings, objects){
   lengths
 }
 
-pos2idx_gen <- function(str, lengths){
-  str_vec <- unlist(strsplit(str, ""))
-  stopifnot("Result string contains index that does not appear on the left-hand side" =
-              all(str_vec %in% names(lengths)))
-  length_lookup <- c(1, cumprod(lengths[str_vec]))[seq_len(length(str_vec))]
-  function(pos){
-    stopifnot(all(pos[str_vec] < lengths[str_vec]))
-    sum(pos[str_vec] * length_lookup)
-  }
-}
-
-idx2pos_gen <- function(str, lengths){
-  str_vec <- unlist(strsplit(str, ""))
-  stopifnot("Result string contains index that does not appear on the left-hand side" =
-              all(str_vec %in% names(lengths)))
-  length_lookup <- c(1, cumprod(lengths[str_vec]))[seq_len(length(str_vec))]
-  names(length_lookup) <- str_vec
-  function(idx){
-    res <- vapply(str_vec, function(s) floor(idx / length_lookup[s]) %% lengths[s], FUN.VALUE = 0.0)
-    names(res) <- str_vec
-    res
-  }
-}

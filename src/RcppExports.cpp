@@ -31,10 +31,26 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// mat_mult
+NumericVector mat_mult(NumericVector mat1, NumericVector mat2, int I, int J, int K);
+RcppExport SEXP _einsum_mat_mult(SEXP mat1SEXP, SEXP mat2SEXP, SEXP ISEXP, SEXP JSEXP, SEXP KSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type mat1(mat1SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mat2(mat2SEXP);
+    Rcpp::traits::input_parameter< int >::type I(ISEXP);
+    Rcpp::traits::input_parameter< int >::type J(JSEXP);
+    Rcpp::traits::input_parameter< int >::type K(KSEXP);
+    rcpp_result_gen = Rcpp::wrap(mat_mult(mat1, mat2, I, J, K));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_einsum_twice", (DL_FUNC) &_einsum_twice, 1},
     {"_einsum_einsum_impl_fast", (DL_FUNC) &_einsum_einsum_impl_fast, 5},
+    {"_einsum_mat_mult", (DL_FUNC) &_einsum_mat_mult, 5},
     {NULL, NULL, 0}
 };
 

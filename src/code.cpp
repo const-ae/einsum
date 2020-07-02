@@ -54,10 +54,13 @@ NumericVector einsum_impl_fast(IntegerVector lengths_vec,
     sum_size *= lengths_vec[e];
   }
   size_t output_size = 1;
-  for(auto e : result_vars_vec){
-    output_size *= lengths_vec[e];
+  IntegerVector dim(std::max(1L, result_vars_vec.size()), 1);
+  for(size_t i = 0; i < result_vars_vec.size(); i++){
+    output_size *= lengths_vec[result_vars_vec[i]];
+    dim[i] = lengths_vec[result_vars_vec[i]];
   }
   NumericVector output(output_size);
+  output.attr("dim") = dim;
 
   auto out_pos2idx = pos2idx_gen(result_vars_vec, lengths_vec);
   auto out_idx2pos = idx2pos_gen(result_vars_vec, lengths_vec);
@@ -75,7 +78,8 @@ NumericVector einsum_impl_fast(IntegerVector lengths_vec,
       sum_idx2pos(sum_idx, pos);
       double product = 1;
       for(size_t arr_idx = 0; arr_idx < arrays.size(); arr_idx++) {
-        product *= arrays[arr_idx][(arr_pos2idx_list[arr_idx])(pos)];
+        int lookup_idx = arr_pos2idx_list[arr_idx](pos);
+        product *= arrays[arr_idx][lookup_idx];
       }
       sum += product;
     }
@@ -89,33 +93,32 @@ NumericVector einsum_impl_fast(IntegerVector lengths_vec,
 
 
 /*** R
-mat1 <- matrix(rnorm(n = 4 * 80000), nrow = 4, ncol = 80000)
-mat2 <- matrix(rnorm(n = 80000 * 3), nrow = 80000, ncol = 3)
+mat1 <- matrix(rnorm(n = 4 * 8), nrow = 4, ncol = 8)
+mat2 <- matrix(rnorm(n = 8 * 3), nrow = 8, ncol = 3)
 
 # j is 8 and 3
 einsum("ij,jk -> ik", mat1, mat2)
+einsum_fast("ij,jk -> ik", mat1, mat2)
 
-arrays <- list(mat1, mat2)
-lengths_vec <- as.integer(c(i = 4, j = 80000, k = 3))
-lhs <- c("ij", "jk")
-strings <- stringr::str_split(lhs, "")
-result_string <- c("i", "k")
 
-all_vars <- sort(unique(unlist(strings)))
-array_vars_list <- lapply(strings, function(st){
-  sapply(st, function(s) which(all_vars == s) - 1)
-})
-result_vars_vec <-  sapply(result_string, function(s) which(all_vars == s) - 1)
-not_result_vars_vec <- setdiff(seq_along(all_vars) - 1, result_vars_vec)
 
-einsum_impl_fast(lengths_vec, array_vars_list, not_result_vars_vec, result_vars_vec, arrays)
-mat1 %*% mat2
+# arrays <- list(mat1, mat2)
+# lengths_vec <- as.integer(c(i = 4, j = 80000, k = 3))
+# lhs <- c("ij", "jk")
+# strings <- stringr::str_split(lhs, "")
+# result_string <- c("i", "k")
+#
+# all_vars <- sort(unique(unlist(strings)))
+# array_vars_list <- lapply(strings, function(st){
+#   sapply(st, function(s) which(all_vars == s) - 1)
+# })
+# result_vars_vec <-  sapply(result_string, function(s) which(all_vars == s) - 1)
+# not_result_vars_vec <- setdiff(seq_along(all_vars) - 1, result_vars_vec)
+#
+# einsum_impl_fast(lengths_vec, array_vars_list, not_result_vars_vec, result_vars_vec, arrays)
+# mat1 %*% mat2
 
-bench::mark(
-  # einsum = c(einsum("ij,jk -> ik", mat1, mat2)),
-  einsum_rcpp = einsum_impl_fast(lengths_vec, array_vars_list, not_result_vars_vec, result_vars_vec, arrays),
-  matmult = c(mat1 %*% t(t(mat2)))
-)
+
 
 */
 
