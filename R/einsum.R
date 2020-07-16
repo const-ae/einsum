@@ -9,6 +9,9 @@
 #'   Whitespace inside the \code{equation_string} is ignored. Unlike the
 #'   equivalent functions in Python, \code{einsum()} only supports the explicit
 #'   mode. This means that the \code{equation_string} must contain '->'.
+#' @param compile_function boolean that decides if \code{einsum_generator()}
+#'   returns the result of \code{Rcpp::cppFunction()} or the program as a
+#'   string. Default: \code{TRUE}.
 #' @param ... the arrays that are combined. All arguments are converted
 #'   to arrays with \code{as.array}.
 #'
@@ -41,9 +44,11 @@
 #' "sum over duplicated indices" however is not a good mental model. A better rule of thumb is
 #' "sum over all indices not in the result".
 #'
-#' \emph{Note:} This function is implemented in pure R with a few for loops. Do not expect
-#' impressive performance. However, if there is continued demand for a more performant
-#' version, I would be open to implement it with Rcpp.
+#' \emph{Note:} \code{einsum()} internally uses C++ code to speed up the calculations. However,
+#' if you need to do the same calculation over and over again it can be worth to use
+#' \code{einsum_generator()} and call the returned the function. \code{einsum_generator()}
+#' generates efficient C++ code that can be one or two orders of magnitude faster than
+#' \code{einsum()}.
 #'
 #' @examples
 #' mat1 <- matrix(rnorm(n = 4 * 8), nrow = 4, ncol = 8)
@@ -52,6 +57,10 @@
 #' # Matrix Multiply
 #' mat1 %*% mat2
 #' einsum("ij,jk -> ik", mat1, mat2)
+#'
+#' # einsum_generator() works just like einsum() but returns a performant function
+#' mat_mult <- einsum_generator("ij,jk -> ik")
+#' mat_mult(mat1, mat2)
 #'
 #' # Diag
 #' mat_sq <- matrix(rnorm(n = 4 * 4), nrow = 4, ncol = 4)

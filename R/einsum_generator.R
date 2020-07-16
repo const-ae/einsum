@@ -1,3 +1,6 @@
+
+#' @rdname einsum
+#' @export
 einsum_generator <- function(equation_string, compile_function = TRUE){
   equation_string <- gsub("\\s", "", equation_string)
 
