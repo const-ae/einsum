@@ -101,6 +101,34 @@ tensor::tensor(tensor::tensor(arr1, arr2, alongA = 3, alongB = 1), arr3, alongA 
 #> [1] -0.7015596 -4.0114655 -1.6420695 -3.4131292  0.7233701
 ```
 
+If you need to do the same computation over and over again, you can use
+`einsum_generator()` which generates and compiles efficient C++ to do
+exactly that calculation. It can take a few seconds, to create the
+function with `einsum_generator()`, however the returned function can be
+one or two orders of magnitude faster than `einsum()`
+
+``` r
+# einsum_generator returns a function
+array_prod <- einsum_generator("abc, cd, ba -> d")
+array_prod(arr1, arr2, arr3)
+#> [1] -0.7015596 -4.0114655 -1.6420695 -3.4131292  0.7233701
+```
+
+``` r
+bench::mark(
+  tensor = tensor::tensor(tensor::tensor(arr1, arr2, alongA = 3, alongB = 1), 
+                          arr3, alongA = c(2,1), alongB = c(1, 2)),
+  einsum = einsum("abc, cd, ba -> d", arr1, arr2, arr3),
+  einsum_generator = array_prod(arr1, arr2, arr3)
+)
+#> # A tibble: 3 x 6
+#>   expression            min   median `itr/sec` mem_alloc `gc/sec`
+#>   <bch:expr>       <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
+#> 1 tensor               58µs   66.1µs    14714.    2.93KB     95.7
+#> 2 einsum              247µs  267.4µs     3572.    2.49KB     25.4
+#> 3 einsum_generator      3µs    3.8µs   231928.    2.49KB      0
+```
+
 # Credit
 
 This package is inspired by the equivalent function in

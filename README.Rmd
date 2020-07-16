@@ -86,7 +86,23 @@ tensor::tensor(tensor::tensor(arr1, arr2, alongA = 3, alongB = 1), arr3, alongA 
 ```
 
 
+If you need to do the same computation over and over again, you can use `einsum_generator()` which generates and compiles efficient C++ to do exactly that calculation. It can take a few seconds, to create the function with `einsum_generator()`, however the returned function can be one or two orders of magnitude faster than `einsum()`
 
+```{r}
+# einsum_generator returns a function
+array_prod <- einsum_generator("abc, cd, ba -> d")
+array_prod(arr1, arr2, arr3)
+```
+
+
+```{r}
+bench::mark(
+  tensor = tensor::tensor(tensor::tensor(arr1, arr2, alongA = 3, alongB = 1), 
+                          arr3, alongA = c(2,1), alongB = c(1, 2)),
+  einsum = einsum("abc, cd, ba -> d", arr1, arr2, arr3),
+  einsum_generator = array_prod(arr1, arr2, arr3)
+)
+```
 
 
 # Credit
