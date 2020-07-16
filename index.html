@@ -36,7 +36,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">einsum</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.9001</span>
       </span>
     </div>
 
@@ -133,6 +133,27 @@
 <div class="sourceCode" id="cb7"><pre class="downlit">
 <span class="kw">tensor</span>::<span class="fu">tensor</span>(<span class="kw">tensor</span>::<span class="fu">tensor</span>(<span class="kw">arr1</span>, <span class="kw">arr2</span>, alongA = <span class="fl">3</span>, alongB = <span class="fl">1</span>), <span class="kw">arr3</span>, alongA = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">2</span>,<span class="fl">1</span>), alongB = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">2</span>))
 <span class="co">#&gt; [1] -0.7015596 -4.0114655 -1.6420695 -3.4131292  0.7233701</span>
+</pre></div>
+<p>If you need to do the same computation over and over again, you can use <code><a href="reference/einsum.html">einsum_generator()</a></code> which generates and compiles efficient C++ to do exactly that calculation. It can take a few seconds, to create the function with <code><a href="reference/einsum.html">einsum_generator()</a></code>, however the returned function can be one or two orders of magnitude faster than <code><a href="reference/einsum.html">einsum()</a></code></p>
+<div class="sourceCode" id="cb8"><pre class="downlit">
+<span class="co"># einsum_generator returns a function</span>
+<span class="kw">array_prod</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/einsum.html">einsum_generator</a></span>(<span class="st">"abc, cd, ba -&gt; d"</span>)
+<span class="fu">array_prod</span>(<span class="kw">arr1</span>, <span class="kw">arr2</span>, <span class="kw">arr3</span>)
+<span class="co">#&gt; [1] -0.7015596 -4.0114655 -1.6420695 -3.4131292  0.7233701</span>
+</pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit">
+<span class="kw">bench</span>::<span class="fu">mark</span>(
+  tensor = <span class="kw">tensor</span>::<span class="fu">tensor</span>(<span class="kw">tensor</span>::<span class="fu">tensor</span>(<span class="kw">arr1</span>, <span class="kw">arr2</span>, alongA = <span class="fl">3</span>, alongB = <span class="fl">1</span>), 
+                          <span class="kw">arr3</span>, alongA = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">2</span>,<span class="fl">1</span>), alongB = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">2</span>)),
+  einsum = <span class="fu"><a href="reference/einsum.html">einsum</a></span>(<span class="st">"abc, cd, ba -&gt; d"</span>, <span class="kw">arr1</span>, <span class="kw">arr2</span>, <span class="kw">arr3</span>),
+  einsum_generator = <span class="fu">array_prod</span>(<span class="kw">arr1</span>, <span class="kw">arr2</span>, <span class="kw">arr3</span>)
+)
+<span class="co">#&gt; # A tibble: 3 x 6</span>
+<span class="co">#&gt;   expression            min   median `itr/sec` mem_alloc `gc/sec`</span>
+<span class="co">#&gt;   &lt;bch:expr&gt;       &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 tensor               58µs   66.1µs    14714.    2.93KB     95.7</span>
+<span class="co">#&gt; 2 einsum              247µs  267.4µs     3572.    2.49KB     25.4</span>
+<span class="co">#&gt; 3 einsum_generator      3µs    3.8µs   231928.    2.49KB      0</span>
 </pre></div>
 </div>
 </div>
