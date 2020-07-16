@@ -1,10 +1,6 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-// [[Rcpp::export]]
-double twice(double x){
-  return x * 2.0;
-}
 
 
 std::function<int (IntegerVector)> pos2idx_gen(const IntegerVector& str_vec, const IntegerVector& lengths_vec){
@@ -87,7 +83,6 @@ NumericVector einsum_impl_fast(IntegerVector lengths_vec,
   }
   return output;
 }
-
 
 
 
