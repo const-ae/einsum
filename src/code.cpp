@@ -93,27 +93,33 @@ mat2 <- matrix(rnorm(n = 8 * 3), nrow = 8, ncol = 3)
 
 # j is 8 and 3
 einsum("ij,jk -> ik", mat1, mat2)
-einsum_fast("ij,jk -> ik", mat1, mat2)
-
-
-
-# arrays <- list(mat1, mat2)
-# lengths_vec <- as.integer(c(i = 4, j = 80000, k = 3))
-# lhs <- c("ij", "jk")
-# strings <- stringr::str_split(lhs, "")
-# result_string <- c("i", "k")
-#
-# all_vars <- sort(unique(unlist(strings)))
-# array_vars_list <- lapply(strings, function(st){
-#   sapply(st, function(s) which(all_vars == s) - 1)
-# })
-# result_vars_vec <-  sapply(result_string, function(s) which(all_vars == s) - 1)
-# not_result_vars_vec <- setdiff(seq_along(all_vars) - 1, result_vars_vec)
-#
-# einsum_impl_fast(lengths_vec, array_vars_list, not_result_vars_vec, result_vars_vec, arrays)
-# mat1 %*% mat2
+cat(einsum_generator("ij,jk-> ik", compile_function = FALSE))
 
 
 
 */
 
+// This function is just to see if there were any warnings about the generated code
+NumericVector einsum_mat_mult(NumericVector array1, NumericVector array2){
+  NumericVector size(3);
+  IntegerVector array1_dim = array1.hasAttribute("dim") ? array1.attr("dim") : IntegerVector::create(array1.length());
+  IntegerVector array2_dim = array2.hasAttribute("dim") ? array2.attr("dim") : IntegerVector::create(array2.length());
+  size[0] = array1_dim[0];
+  size[1] = array1_dim[1];
+  if(size[1] != array2_dim[0]) stop("Dimension 1 of object array2 does not match!");
+  size[2] = array2_dim[1];
+
+  NumericVector result(size[0] * size[2]);
+  for(int i = 0; i < size[0]; ++i){
+    for(int k = 0; k < size[2]; ++k){
+      double sum = 0.0;
+      for(int j = 0; j < size[1]; ++j){
+        sum += array1[1 * (i + size[0] * (j))] * array2[1 * (j + size[1] * (k))];
+      }
+      result[1 * (i + size[0] * (k))] = sum;
+    }
+  }
+  result.attr("dim") = IntegerVector::create(size[0],size[2]);
+  return result;
+
+}
