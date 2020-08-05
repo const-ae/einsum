@@ -50,7 +50,7 @@ NumericVector einsum_impl_fast(IntegerVector lengths_vec,
     sum_size *= lengths_vec[e];
   }
   size_t output_size = 1;
-  IntegerVector dim(std::max(1L, result_vars_vec.size()), 1);
+  IntegerVector dim(std::max((R_xlen_t) 1L, result_vars_vec.size()), 1);
   for(size_t i = 0; i < result_vars_vec.size(); i++){
     output_size *= lengths_vec[result_vars_vec[i]];
     dim[i] = lengths_vec[result_vars_vec[i]];
