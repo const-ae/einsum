@@ -118,9 +118,9 @@ Einstein summation is a convenient and concise notation for operations
 on n-dimensional arrays.</p>
     </div>
 
-    <pre class="usage"><span class='fu'><a href='https://rdrr.io/pkg/einsum/man/einsum.html'>einsum</a></span>(<span class='kw'>equation_string</span>, <span class='kw'>...</span>)
+    <pre class="usage"><span class='fu'>einsum</span>(<span class='kw'>equation_string</span>, <span class='kw'>...</span>)
 
-<span class='fu'><a href='https://rdrr.io/pkg/einsum/man/einsum.html'>einsum_generator</a></span>(<span class='kw'>equation_string</span>, compile_function = <span class='fl'>TRUE</span>)</pre>
+<span class='fu'>einsum_generator</span>(<span class='kw'>equation_string</span>, compile_function = <span class='fl'>TRUE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -131,7 +131,7 @@ on n-dimensional arrays.</p>
 are separated by ',' and the result is separated by '-&gt;'. For
 example <code>"ij,jk-&gt;ik"</code> corresponds to a standard matrix multiplication.
 Whitespace inside the <code>equation_string</code> is ignored. Unlike the
-equivalent functions in Python, <code><a href='https://rdrr.io/pkg/einsum/man/einsum.html'>einsum()</a></code> only supports the explicit
+equivalent functions in Python, <code>einsum()</code> only supports the explicit
 mode. This means that the <code>equation_string</code> must contain '-&gt;'.</p></td>
     </tr>
     <tr>
@@ -141,7 +141,7 @@ to arrays with <code>as.array</code>.</p></td>
     </tr>
     <tr>
       <th>compile_function</th>
-      <td><p>boolean that decides if <code><a href='https://rdrr.io/pkg/einsum/man/einsum.html'>einsum_generator()</a></code>
+      <td><p>boolean that decides if <code>einsum_generator()</code>
 returns the result of <code><a href='https://rdrr.io/pkg/Rcpp/man/cppFunction.html'>Rcpp::cppFunction()</a></code> or the program as a
 string. Default: <code>TRUE</code>.</p></td>
     </tr>
@@ -164,17 +164,17 @@ summation for arrays/matrices:</p>
 
 
 
-<p>The function and the conventions are inspired by the <code><a href='https://rdrr.io/pkg/einsum/man/einsum.html'>einsum()</a></code> function
+<p>The function and the conventions are inspired by the <code>einsum()</code> function
 in NumPy (<a href='https://numpy.org/doc/stable/reference/generated/numpy.einsum.html'>documentation</a>).
 Unlike NumPy, 'einsum' only supports the explicit mode. The explicit mode is more flexible and
 can avoid confusion. The common summary of the Einstein  summation to
 "sum over duplicated indices" however is not a good mental model. A better rule of thumb is
 "sum over all indices not in the result".</p>
-<p><em>Note:</em> <code><a href='https://rdrr.io/pkg/einsum/man/einsum.html'>einsum()</a></code> internally uses C++ code to speed up the calculations. However,
+<p><em>Note:</em> <code>einsum()</code> internally uses C++ code to speed up the calculations. However,
 if you need to do the same calculation over and over again it can be worth to use
-<code><a href='https://rdrr.io/pkg/einsum/man/einsum.html'>einsum_generator()</a></code> and call the returned the function. <code><a href='https://rdrr.io/pkg/einsum/man/einsum.html'>einsum_generator()</a></code>
+<code>einsum_generator()</code> and call the returned the function. <code>einsum_generator()</code>
 generates efficient C++ code that can be one or two orders of magnitude faster than
-<code><a href='https://rdrr.io/pkg/einsum/man/einsum.html'>einsum()</a></code>.</p>
+<code>einsum()</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>mat1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(n = <span class='fl'>4</span> <span class='op'>*</span> <span class='fl'>8</span>), nrow = <span class='fl'>4</span>, ncol = <span class='fl'>8</span>)
@@ -185,13 +185,13 @@ generates efficient C++ code that can be one or two orders of magnitude faster t
 #&gt; [1,] -0.2441351 -0.3344163 -2.348732
 #&gt; [2,]  0.5290658 -0.1933795 -2.828903
 #&gt; [3,] -3.0636701 -1.9637461  2.942458
-#&gt; [4,]  1.6505211  2.3222916  1.766643</div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/einsum/man/einsum.html'>einsum</a></span>(<span class='st'>"ij,jk -&gt; ik"</span>, <span class='kw'>mat1</span>, <span class='kw'>mat2</span>)</div><div class='output co'>#&gt;            [,1]       [,2]      [,3]
+#&gt; [4,]  1.6505211  2.3222916  1.766643</div><div class='input'><span class='fu'>einsum</span>(<span class='st'>"ij,jk -&gt; ik"</span>, <span class='kw'>mat1</span>, <span class='kw'>mat2</span>)</div><div class='output co'>#&gt;            [,1]       [,2]      [,3]
 #&gt; [1,] -0.2441351 -0.3344163 -2.348732
 #&gt; [2,]  0.5290658 -0.1933795 -2.828903
 #&gt; [3,] -3.0636701 -1.9637461  2.942458
 #&gt; [4,]  1.6505211  2.3222916  1.766643</div><div class='input'>
 <span class='co'># einsum_generator() works just like einsum() but returns a performant function</span>
-<span class='kw'>mat_mult</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/einsum/man/einsum.html'>einsum_generator</a></span>(<span class='st'>"ij,jk -&gt; ik"</span>)
+<span class='kw'>mat_mult</span> <span class='op'>&lt;-</span> <span class='fu'>einsum_generator</span>(<span class='st'>"ij,jk -&gt; ik"</span>)
 <span class='fu'>mat_mult</span>(<span class='kw'>mat1</span>, <span class='kw'>mat2</span>)</div><div class='output co'>#&gt;            [,1]       [,2]      [,3]
 #&gt; [1,] -0.2441351 -0.3344163 -2.348732
 #&gt; [2,]  0.5290658 -0.1933795 -2.828903
@@ -199,13 +199,13 @@ generates efficient C++ code that can be one or two orders of magnitude faster t
 #&gt; [4,]  1.6505211  2.3222916  1.766643</div><div class='input'>
 <span class='co'># Diag</span>
 <span class='kw'>mat_sq</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(n = <span class='fl'>4</span> <span class='op'>*</span> <span class='fl'>4</span>), nrow = <span class='fl'>4</span>, ncol = <span class='fl'>4</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='kw'>mat_sq</span>)</div><div class='output co'>#&gt; [1] -2.2741149 -0.6650882  1.0650573  0.2841503</div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/einsum/man/einsum.html'>einsum</a></span>(<span class='st'>"ii-&gt;i"</span>, <span class='kw'>mat_sq</span>)</div><div class='output co'>#&gt; [1] -2.2741149 -0.6650882  1.0650573  0.2841503</div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/einsum/man/einsum.html'>einsum</a></span>(<span class='st'>"ii-&gt;ii"</span>, <span class='kw'>mat_sq</span>)</div><div class='output co'>#&gt;           [,1]       [,2]     [,3]      [,4]
+<span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='kw'>mat_sq</span>)</div><div class='output co'>#&gt; [1] -2.2741149 -0.6650882  1.0650573  0.2841503</div><div class='input'><span class='fu'>einsum</span>(<span class='st'>"ii-&gt;i"</span>, <span class='kw'>mat_sq</span>)</div><div class='output co'>#&gt; [1] -2.2741149 -0.6650882  1.0650573  0.2841503</div><div class='input'><span class='fu'>einsum</span>(<span class='st'>"ii-&gt;ii"</span>, <span class='kw'>mat_sq</span>)</div><div class='output co'>#&gt;           [,1]       [,2]     [,3]      [,4]
 #&gt; [1,] -2.274115  0.0000000 0.000000 0.0000000
 #&gt; [2,]  0.000000 -0.6650882 0.000000 0.0000000
 #&gt; [3,]  0.000000  0.0000000 1.065057 0.0000000
 #&gt; [4,]  0.000000  0.0000000 0.000000 0.2841503</div><div class='input'>
 <span class='co'># Trace</span>
-<span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='kw'>mat_sq</span>))</div><div class='output co'>#&gt; [1] -1.589995</div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/einsum/man/einsum.html'>einsum</a></span>(<span class='st'>"ii-&gt;"</span>, <span class='kw'>mat_sq</span>)</div><div class='output co'>#&gt; [1] -1.589995</div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='kw'>mat_sq</span>))</div><div class='output co'>#&gt; [1] -1.589995</div><div class='input'><span class='fu'>einsum</span>(<span class='st'>"ii-&gt;"</span>, <span class='kw'>mat_sq</span>)</div><div class='output co'>#&gt; [1] -1.589995</div><div class='input'>
 
 <span class='co'># Scalar product</span>
 <span class='kw'>mat3</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(n = <span class='fl'>4</span> <span class='op'>*</span> <span class='fl'>8</span>), nrow = <span class='fl'>4</span>, ncol = <span class='fl'>8</span>)
@@ -218,7 +218,7 @@ generates efficient C++ code that can be one or two orders of magnitude faster t
 #&gt; [1,] -0.669212804  0.3201439
 #&gt; [2,] -0.092216969  1.1878881
 #&gt; [3,] -1.232348460 -0.9884328
-#&gt; [4,]  0.004731501 -0.1404040</div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/einsum/man/einsum.html'>einsum</a></span>(<span class='st'>"ij,ij-&gt;ij"</span>, <span class='kw'>mat3</span>, <span class='kw'>mat1</span>)</div><div class='output co'>#&gt;              [,1]        [,2]       [,3]       [,4]        [,5]        [,6]
+#&gt; [4,]  0.004731501 -0.1404040</div><div class='input'><span class='fu'>einsum</span>(<span class='st'>"ij,ij-&gt;ij"</span>, <span class='kw'>mat3</span>, <span class='kw'>mat1</span>)</div><div class='output co'>#&gt;              [,1]        [,2]       [,3]       [,4]        [,5]        [,6]
 #&gt; [1,] -1.872306774  0.37712590 -0.4699239 -1.1321649 -0.22649590  0.49095945
 #&gt; [2,]  0.060432598 -0.12625140 -0.3670627 -1.8112706  0.02009136 -0.01382949
 #&gt; [3,] -3.213028494 -0.31368369 -0.4146053 -1.3386305  0.23033230 -0.63420243
@@ -237,7 +237,7 @@ generates efficient C++ code that can be one or two orders of magnitude faster t
 #&gt; [5,] -0.5220125 -0.05260191  0.5429963 -0.914074827
 #&gt; [6,]  0.4681544  0.36295126 -1.3045435  0.737776321
 #&gt; [7,]  1.8885049 -0.09744510 -0.9358474 -0.015950311
-#&gt; [8,] -0.8267890 -1.51239965  0.9353632  0.176488611</div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/einsum/man/einsum.html'>einsum</a></span>(<span class='st'>"ij-&gt;ji"</span>, <span class='kw'>mat1</span>)</div><div class='output co'>#&gt;            [,1]        [,2]       [,3]         [,4]
+#&gt; [8,] -0.8267890 -1.51239965  0.9353632  0.176488611</div><div class='input'><span class='fu'>einsum</span>(<span class='st'>"ij-&gt;ji"</span>, <span class='kw'>mat1</span>)</div><div class='output co'>#&gt;            [,1]        [,2]       [,3]         [,4]
 #&gt; [1,] -1.4000435  0.25531705 -2.4372636 -0.005571287
 #&gt; [2,]  0.6215527  1.14841161 -1.8218177 -0.247325302
 #&gt; [3,] -0.2441996 -0.28270545 -0.5536994  0.628982042
@@ -249,7 +249,7 @@ generates efficient C++ code that can be one or two orders of magnitude faster t
 
 <span class='co'># Batched L2 norm</span>
 <span class='kw'>arr1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>mat1</span>, <span class='kw'>mat3</span>), dim = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>(<span class='kw'>mat1</span>), <span class='fl'>2</span>))
-<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>(<span class='kw'>mat1</span><span class='op'>^</span><span class='fl'>2</span>), <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>(<span class='kw'>mat3</span><span class='op'>^</span><span class='fl'>2</span>))</div><div class='output co'>#&gt; [1] 36.88225 30.05625</div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/einsum/man/einsum.html'>einsum</a></span>(<span class='st'>"ijb,ijb-&gt;b"</span>, <span class='kw'>arr1</span>, <span class='kw'>arr1</span>)</div><div class='output co'>#&gt; [1] 36.88225 30.05625</div><div class='input'></div></pre>
+<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>(<span class='kw'>mat1</span><span class='op'>^</span><span class='fl'>2</span>), <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>(<span class='kw'>mat3</span><span class='op'>^</span><span class='fl'>2</span>))</div><div class='output co'>#&gt; [1] 36.88225 30.05625</div><div class='input'><span class='fu'>einsum</span>(<span class='st'>"ijb,ijb-&gt;b"</span>, <span class='kw'>arr1</span>, <span class='kw'>arr1</span>)</div><div class='output co'>#&gt; [1] 36.88225 30.05625</div><div class='input'></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

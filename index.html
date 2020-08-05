@@ -70,11 +70,11 @@
 <a href="#einsum" class="anchor"></a>einsum</h1></div>
 <!-- badges: start -->
 
-<p>Einstein summation is a concise mathematical notation that implicitly sums over repeated indices of n-dimensional arrays. Many ordinary matrix operations (e.g. transpose, matrix multiplication, scalar product, ‘diag()’, trace etc.) can be written using Einstein notation. The notation is particularly convenient for expressing operations on arrays with more than two dimensions because the respective operators (‘tensor products’) might not have a standardized name.</p>
+<p><a href="https://en.wikipedia.org/wiki/Einstein_notation">Einstein summation</a> is a concise mathematical notation that implicitly sums over repeated indices of n-dimensional arrays. Many ordinary matrix operations (e.g. transpose, matrix multiplication, scalar product, ‘diag()’, trace etc.) can be written using Einstein notation. The notation is particularly convenient for expressing operations on arrays with more than two dimensions because the respective operators (‘tensor products’) might not have a standardized name.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<p>You can install the development version from <a href="https://github.com/">GitHub</a> with:</p>
+<p>You can install the development version from <a href="https://github.com/einsum">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit">
 <span class="co"># install.packages("devtools")</span>
 <span class="kw">devtools</span>::<span class="fu">install_github</span>(<span class="st">"const-ae/einsum"</span>)
@@ -118,7 +118,7 @@
 <span class="co">#&gt; [7,] -0.5380896  0.8600228  0.4430880 -0.06022769</span>
 <span class="co">#&gt; [8,]  3.0707573 -2.5552313 -1.5538108 -1.28101253</span>
 </pre></div>
-<p>This was a fairly simple example and there seems little benefit of using it over the more familiar matrix product expression. ‘einsum’ even is a lot slower.</p>
+<p>This is a fairly simple example and there seems little benefit of using it over the more familiar matrix product expression. Furthermore, ‘einsum’ is a lot slower.</p>
 <p>However, ‘einsum’ truly shines when working with more than 2-dimensional arrays, where it can be difficult to figure out the correct kind of tensor product:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit">
 <span class="co"># Make some n-dimensional arrays</span>
@@ -151,9 +151,9 @@
 <span class="co">#&gt; # A tibble: 3 x 6</span>
 <span class="co">#&gt;   expression            min   median `itr/sec` mem_alloc `gc/sec`</span>
 <span class="co">#&gt;   &lt;bch:expr&gt;       &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 tensor               58µs   66.1µs    14714.    2.93KB     95.7</span>
-<span class="co">#&gt; 2 einsum              247µs  267.4µs     3572.    2.49KB     25.4</span>
-<span class="co">#&gt; 3 einsum_generator      3µs    3.8µs   231928.    2.49KB      0</span>
+<span class="co">#&gt; 1 tensor            55.17µs  63.32µs    15351.    2.93KB     99.9</span>
+<span class="co">#&gt; 2 einsum           248.31µs 265.42µs     3553.    2.49KB     23.2</span>
+<span class="co">#&gt; 3 einsum_generator   3.01µs   3.46µs   245505.    2.49KB     24.6</span>
 </pre></div>
 </div>
 </div>
