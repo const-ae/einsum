@@ -21,7 +21,7 @@ set.seed(1)
 [![Codecov test coverage](https://codecov.io/gh/const-ae/einsum/branch/master/graph/badge.svg)](https://codecov.io/gh/const-ae/einsum?branch=master)
 <!-- badges: end -->
 
-Einstein summation is a concise mathematical notation that 
+[Einstein summation](https://en.wikipedia.org/wiki/Einstein_notation) is a concise mathematical notation that 
 implicitly sums over repeated indices of n-dimensional arrays. Many ordinary
 matrix operations (e.g. transpose, matrix multiplication, scalar product, 'diag()', trace etc.)
 can be written using Einstein notation. The notation is particularly convenient for 
@@ -67,7 +67,7 @@ mat1 %*% mat2
 ```
 
 
-This was a fairly simple example and there seems little benefit of using it over the more familiar matrix product expression. 'einsum' even is a lot slower. 
+This is a fairly simple example and there seems little benefit of using it over the more familiar matrix product expression. Furthermore, 'einsum' is a lot slower. 
 
 However, 'einsum' truly shines when working with more than 2-dimensional arrays, where it can be difficult to figure out the correct kind of tensor product:
 

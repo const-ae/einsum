@@ -11,13 +11,14 @@ status](https://github.com/const-ae/einsum/workflows/R-CMD-check/badge.svg)](htt
 coverage](https://codecov.io/gh/const-ae/einsum/branch/master/graph/badge.svg)](https://codecov.io/gh/const-ae/einsum?branch=master)
 <!-- badges: end -->
 
-Einstein summation is a concise mathematical notation that implicitly
-sums over repeated indices of n-dimensional arrays. Many ordinary matrix
-operations (e.g. transpose, matrix multiplication, scalar product,
-‘diag()’, trace etc.) can be written using Einstein notation. The
-notation is particularly convenient for expressing operations on arrays
-with more than two dimensions because the respective operators (‘tensor
-products’) might not have a standardized name.
+[Einstein summation](https://en.wikipedia.org/wiki/Einstein_notation) is
+a concise mathematical notation that implicitly sums over repeated
+indices of n-dimensional arrays. Many ordinary matrix operations
+(e.g. transpose, matrix multiplication, scalar product, ‘diag()’, trace
+etc.) can be written using Einstein notation. The notation is
+particularly convenient for expressing operations on arrays with more
+than two dimensions because the respective operators (‘tensor products’)
+might not have a standardized name.
 
 ## Installation
 
@@ -74,9 +75,9 @@ mat1 %*% mat2
 #> [8,]  3.0707573 -2.5552313 -1.5538108 -1.28101253
 ```
 
-This was a fairly simple example and there seems little benefit of using
-it over the more familiar matrix product expression. ‘einsum’ even is a
-lot slower.
+This is a fairly simple example and there seems little benefit of using
+it over the more familiar matrix product expression. Furthermore,
+‘einsum’ is a lot slower.
 
 However, ‘einsum’ truly shines when working with more than 2-dimensional
 arrays, where it can be difficult to figure out the correct kind of
@@ -124,9 +125,9 @@ bench::mark(
 #> # A tibble: 3 x 6
 #>   expression            min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr>       <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 tensor               58µs   66.1µs    14714.    2.93KB     95.7
-#> 2 einsum              247µs  267.4µs     3572.    2.49KB     25.4
-#> 3 einsum_generator      3µs    3.8µs   231928.    2.49KB      0
+#> 1 tensor            55.04µs   64.8µs    15168.    2.93KB     97.7
+#> 2 einsum           247.69µs 263.22µs     3629.    2.49KB     25.4
+#> 3 einsum_generator   3.08µs   3.47µs   255553.    2.49KB     25.6
 ```
 
 # Credit
