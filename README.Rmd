@@ -30,7 +30,7 @@ respective operators ('tensor products') might not have a standardized name.
 
 ## Installation
 
-You can install the development version from [GitHub](https://github.com/) with:
+You can install the development version from [GitHub](https://github.com/einsum) with:
 
 ``` r
 # install.packages("devtools")

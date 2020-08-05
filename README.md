@@ -23,7 +23,7 @@ might not have a standardized name.
 ## Installation
 
 You can install the development version from
-[GitHub](https://github.com/) with:
+[GitHub](https://github.com/einsum) with:
 
 ``` r
 # install.packages("devtools")
@@ -125,9 +125,9 @@ bench::mark(
 #> # A tibble: 3 x 6
 #>   expression            min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr>       <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 tensor            55.04µs   64.8µs    15168.    2.93KB     97.7
-#> 2 einsum           247.69µs 263.22µs     3629.    2.49KB     25.4
-#> 3 einsum_generator   3.08µs   3.47µs   255553.    2.49KB     25.6
+#> 1 tensor            55.17µs  63.32µs    15351.    2.93KB     99.9
+#> 2 einsum           248.31µs 265.42µs     3553.    2.49KB     23.2
+#> 3 einsum_generator   3.01µs   3.46µs   245505.    2.49KB     24.6
 ```
 
 # Credit
