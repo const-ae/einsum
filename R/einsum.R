@@ -30,10 +30,10 @@
 #'   ------------------------\tab--------------------------------------\tab----------------------------------\cr
 #'   \code{"ij,jk->ik"} \tab \mjseqn{ Y_{ik} = \sum_{j}{A_{ij} B_{jk}}  } \tab Matrix multiplication \cr
 #'   \code{"ij->ji"}` \tab \mjseqn{ Y = A^{T}  } \tab Transpose \cr
-#'   \code{"ii->i"} \tab \mjseqn{y = \text{diag}(A)} \tab Diagonal \cr
-#'   \code{"ii->ii"} \tab \mjseqn{Y = \text{diag}(A) I} \tab Diagonal times Identity  \cr
-#'   \code{"ii->"} \tab \mjseqn{y = \text{trace}(A) = \sum_i{A_{ii}} } \tab Trace \cr
-#'   \code{"ijk,mjj->i"} \tab \mjseqn{ y_i = \sum_{j}\sum_{k}\sum_{m}A_{ijk}B_{mjj}  } \tab Complex 3D operation  \cr
+#'   \code{"ii->i"} \tab \mjteqn{y = diag(A)}{y = \text{diag}(A)}{y = diag(A)} \tab Diagonal \cr
+#'   \code{"ii->ii"} \tab \mjteqn{Y = diag(A) I}{Y = \text{diag}(A) I}{Y = diag(A) I} \tab Diagonal times Identity  \cr
+#'   \code{"ii->"} \tab \mjteqn{y = trace(A)}{y = \text{trace}(A) = \sum_i{A_{ii}} }{y = trace(A) = Sum_i(A_{ii})} \tab Trace \cr
+#'   \code{"ijk,mjj->i"} \tab \mjeqn{ y_i = \sum_{j}\sum_{k}\sum_{m}A_{ijk}B_{mjj}  }{y_i = Sum_j Sum_k Sum_m A_{ijk} B_{mjj}} \tab Complex 3D operation  \cr
 #' }
 #'
 #'

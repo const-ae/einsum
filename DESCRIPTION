@@ -14,12 +14,12 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 Suggests: 
     testthat,
-    mathjaxr,
     covr
 RdMacros: mathjaxr
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 LinkingTo: 
     Rcpp
 Imports: 
     Rcpp,
-    glue
+    glue,
+    mathjaxr
