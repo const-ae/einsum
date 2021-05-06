@@ -12,6 +12,7 @@ Description: Einstein summation is a concise mathematical notation that
   respective operators ('tensor products') might not have a standardized name.
 License: MIT + file LICENSE
 Encoding: UTF-8
+SystemRequirements: C++11
 Suggests: 
     testthat,
     covr
