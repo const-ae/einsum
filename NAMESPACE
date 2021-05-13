@@ -2,5 +2,6 @@
 
 export(einsum)
 export(einsum_generator)
+import(mathjaxr)
 importFrom(Rcpp,sourceCpp)
 useDynLib(einsum, .registration = TRUE)
