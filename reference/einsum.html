@@ -61,8 +61,6 @@ on n-dimensional arrays." />
 
 
 
-<!-- dependencies from examples -->
-
 
   
 
@@ -126,9 +124,9 @@ Einstein summation is a convenient and concise notation for operations
 on n-dimensional arrays.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>einsum</span><span class='op'>(</span><span class='va'>equation_string</span>, <span class='va'>...</span><span class='op'>)</span>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>einsum</span><span class='op'>(</span><span class='va'>equation_string</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>einsum_generator</span><span class='op'>(</span><span class='va'>equation_string</span>, compile_function <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
+<span class='fu'>einsum_generator</span><span class='op'>(</span><span class='va'>equation_string</span>, compile_function <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -185,7 +183,7 @@ generates efficient C++ code that can be one or two orders of magnitude faster t
 <code>einsum()</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'><span class='va'>mat1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span>n <span class='op'>=</span> <span class='fl'>4</span> <span class='op'>*</span> <span class='fl'>8</span><span class='op'>)</span>, nrow <span class='op'>=</span> <span class='fl'>4</span>, ncol <span class='op'>=</span> <span class='fl'>8</span><span class='op'>)</span></span>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='va'>mat1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span>n <span class='op'>=</span> <span class='fl'>4</span> <span class='op'>*</span> <span class='fl'>8</span><span class='op'>)</span>, nrow <span class='op'>=</span> <span class='fl'>4</span>, ncol <span class='op'>=</span> <span class='fl'>8</span><span class='op'>)</span></span>
 <span class='r-in'><span class='va'>mat2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span>n <span class='op'>=</span> <span class='fl'>8</span> <span class='op'>*</span> <span class='fl'>3</span><span class='op'>)</span>, nrow <span class='op'>=</span> <span class='fl'>8</span>, ncol <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span></span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Matrix Multiply</span></span>
@@ -286,7 +284,7 @@ generates efficient C++ code that can be one or two orders of magnitude faster t
 <span class='r-in'><span class='fu'>einsum</span><span class='op'>(</span><span class='st'>"ijb,ijb-&gt;b"</span>, <span class='va'>arr1</span>, <span class='va'>arr1</span><span class='op'>)</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 36.88225 30.05625</span>
 <span class='r-in'></span>
-</pre>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
