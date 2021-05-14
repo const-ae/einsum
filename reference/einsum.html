@@ -48,6 +48,8 @@ on n-dimensional arrays." />
 
 
 
+
+
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -59,9 +61,18 @@ on n-dimensional arrays." />
 
 
 
+<!-- dependencies from examples -->
+
+
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -82,12 +93,6 @@ on n-dimensional arrays." />
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
       </ul>
@@ -118,9 +123,9 @@ Einstein summation is a convenient and concise notation for operations
 on n-dimensional arrays.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>einsum</span>(<span class='kw'>equation_string</span>, <span class='kw'>...</span>)
+    <pre class="usage"><span class='fu'>einsum</span><span class='op'>(</span><span class='va'>equation_string</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>einsum_generator</span>(<span class='kw'>equation_string</span>, compile_function = <span class='fl'>TRUE</span>)</pre>
+<span class='fu'>einsum_generator</span><span class='op'>(</span><span class='va'>equation_string</span>, compile_function <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -177,79 +182,108 @@ generates efficient C++ code that can be one or two orders of magnitude faster t
 <code>einsum()</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>mat1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(n = <span class='fl'>4</span> <span class='op'>*</span> <span class='fl'>8</span>), nrow = <span class='fl'>4</span>, ncol = <span class='fl'>8</span>)
-<span class='kw'>mat2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(n = <span class='fl'>8</span> <span class='op'>*</span> <span class='fl'>3</span>), nrow = <span class='fl'>8</span>, ncol = <span class='fl'>3</span>)
-
-<span class='co'># Matrix Multiply</span>
-<span class='kw'>mat1</span> <span class='op'>%*%</span> <span class='kw'>mat2</span></div><div class='output co'>#&gt;            [,1]       [,2]      [,3]
-#&gt; [1,] -0.2441351 -0.3344163 -2.348732
-#&gt; [2,]  0.5290658 -0.1933795 -2.828903
-#&gt; [3,] -3.0636701 -1.9637461  2.942458
-#&gt; [4,]  1.6505211  2.3222916  1.766643</div><div class='input'><span class='fu'>einsum</span>(<span class='st'>"ij,jk -&gt; ik"</span>, <span class='kw'>mat1</span>, <span class='kw'>mat2</span>)</div><div class='output co'>#&gt;            [,1]       [,2]      [,3]
-#&gt; [1,] -0.2441351 -0.3344163 -2.348732
-#&gt; [2,]  0.5290658 -0.1933795 -2.828903
-#&gt; [3,] -3.0636701 -1.9637461  2.942458
-#&gt; [4,]  1.6505211  2.3222916  1.766643</div><div class='input'>
-<span class='co'># einsum_generator() works just like einsum() but returns a performant function</span>
-<span class='kw'>mat_mult</span> <span class='op'>&lt;-</span> <span class='fu'>einsum_generator</span>(<span class='st'>"ij,jk -&gt; ik"</span>)
-<span class='fu'>mat_mult</span>(<span class='kw'>mat1</span>, <span class='kw'>mat2</span>)</div><div class='output co'>#&gt;            [,1]       [,2]      [,3]
-#&gt; [1,] -0.2441351 -0.3344163 -2.348732
-#&gt; [2,]  0.5290658 -0.1933795 -2.828903
-#&gt; [3,] -3.0636701 -1.9637461  2.942458
-#&gt; [4,]  1.6505211  2.3222916  1.766643</div><div class='input'>
-<span class='co'># Diag</span>
-<span class='kw'>mat_sq</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(n = <span class='fl'>4</span> <span class='op'>*</span> <span class='fl'>4</span>), nrow = <span class='fl'>4</span>, ncol = <span class='fl'>4</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='kw'>mat_sq</span>)</div><div class='output co'>#&gt; [1] -2.2741149 -0.6650882  1.0650573  0.2841503</div><div class='input'><span class='fu'>einsum</span>(<span class='st'>"ii-&gt;i"</span>, <span class='kw'>mat_sq</span>)</div><div class='output co'>#&gt; [1] -2.2741149 -0.6650882  1.0650573  0.2841503</div><div class='input'><span class='fu'>einsum</span>(<span class='st'>"ii-&gt;ii"</span>, <span class='kw'>mat_sq</span>)</div><div class='output co'>#&gt;           [,1]       [,2]     [,3]      [,4]
-#&gt; [1,] -2.274115  0.0000000 0.000000 0.0000000
-#&gt; [2,]  0.000000 -0.6650882 0.000000 0.0000000
-#&gt; [3,]  0.000000  0.0000000 1.065057 0.0000000
-#&gt; [4,]  0.000000  0.0000000 0.000000 0.2841503</div><div class='input'>
-<span class='co'># Trace</span>
-<span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='kw'>mat_sq</span>))</div><div class='output co'>#&gt; [1] -1.589995</div><div class='input'><span class='fu'>einsum</span>(<span class='st'>"ii-&gt;"</span>, <span class='kw'>mat_sq</span>)</div><div class='output co'>#&gt; [1] -1.589995</div><div class='input'>
-
-<span class='co'># Scalar product</span>
-<span class='kw'>mat3</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(n = <span class='fl'>4</span> <span class='op'>*</span> <span class='fl'>8</span>), nrow = <span class='fl'>4</span>, ncol = <span class='fl'>8</span>)
-<span class='kw'>mat3</span> <span class='op'>*</span> <span class='kw'>mat1</span></div><div class='output co'>#&gt;              [,1]        [,2]       [,3]       [,4]        [,5]        [,6]
-#&gt; [1,] -1.872306774  0.37712590 -0.4699239 -1.1321649 -0.22649590  0.49095945
-#&gt; [2,]  0.060432598 -0.12625140 -0.3670627 -1.8112706  0.02009136 -0.01382949
-#&gt; [3,] -3.213028494 -0.31368369 -0.4146053 -1.3386305  0.23033230 -0.63420243
-#&gt; [4,] -0.002918852  0.02234022  0.3498551  0.2900593 -0.97175477  1.23421318
-#&gt;              [,7]       [,8]
-#&gt; [1,] -0.669212804  0.3201439
-#&gt; [2,] -0.092216969  1.1878881
-#&gt; [3,] -1.232348460 -0.9884328
-#&gt; [4,]  0.004731501 -0.1404040</div><div class='input'><span class='fu'>einsum</span>(<span class='st'>"ij,ij-&gt;ij"</span>, <span class='kw'>mat3</span>, <span class='kw'>mat1</span>)</div><div class='output co'>#&gt;              [,1]        [,2]       [,3]       [,4]        [,5]        [,6]
-#&gt; [1,] -1.872306774  0.37712590 -0.4699239 -1.1321649 -0.22649590  0.49095945
-#&gt; [2,]  0.060432598 -0.12625140 -0.3670627 -1.8112706  0.02009136 -0.01382949
-#&gt; [3,] -3.213028494 -0.31368369 -0.4146053 -1.3386305  0.23033230 -0.63420243
-#&gt; [4,] -0.002918852  0.02234022  0.3498551  0.2900593 -0.97175477  1.23421318
-#&gt;              [,7]       [,8]
-#&gt; [1,] -0.669212804  0.3201439
-#&gt; [2,] -0.092216969  1.1878881
-#&gt; [3,] -1.232348460 -0.9884328
-#&gt; [4,]  0.004731501 -0.1404040</div><div class='input'>
-<span class='co'># Transpose</span>
-<span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span>(<span class='kw'>mat1</span>)</div><div class='output co'>#&gt;            [,1]        [,2]       [,3]         [,4]
-#&gt; [1,] -1.4000435  0.25531705 -2.4372636 -0.005571287
-#&gt; [2,]  0.6215527  1.14841161 -1.8218177 -0.247325302
-#&gt; [3,] -0.2441996 -0.28270545 -0.5536994  0.628982042
-#&gt; [4,]  2.0650249 -1.63098940  0.5124269 -1.863011492
-#&gt; [5,] -0.5220125 -0.05260191  0.5429963 -0.914074827
-#&gt; [6,]  0.4681544  0.36295126 -1.3045435  0.737776321
-#&gt; [7,]  1.8885049 -0.09744510 -0.9358474 -0.015950311
-#&gt; [8,] -0.8267890 -1.51239965  0.9353632  0.176488611</div><div class='input'><span class='fu'>einsum</span>(<span class='st'>"ij-&gt;ji"</span>, <span class='kw'>mat1</span>)</div><div class='output co'>#&gt;            [,1]        [,2]       [,3]         [,4]
-#&gt; [1,] -1.4000435  0.25531705 -2.4372636 -0.005571287
-#&gt; [2,]  0.6215527  1.14841161 -1.8218177 -0.247325302
-#&gt; [3,] -0.2441996 -0.28270545 -0.5536994  0.628982042
-#&gt; [4,]  2.0650249 -1.63098940  0.5124269 -1.863011492
-#&gt; [5,] -0.5220125 -0.05260191  0.5429963 -0.914074827
-#&gt; [6,]  0.4681544  0.36295126 -1.3045435  0.737776321
-#&gt; [7,]  1.8885049 -0.09744510 -0.9358474 -0.015950311
-#&gt; [8,] -0.8267890 -1.51239965  0.9353632  0.176488611</div><div class='input'>
-
-<span class='co'># Batched L2 norm</span>
-<span class='kw'>arr1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>mat1</span>, <span class='kw'>mat3</span>), dim = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>(<span class='kw'>mat1</span>), <span class='fl'>2</span>))
-<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>(<span class='kw'>mat1</span><span class='op'>^</span><span class='fl'>2</span>), <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>(<span class='kw'>mat3</span><span class='op'>^</span><span class='fl'>2</span>))</div><div class='output co'>#&gt; [1] 36.88225 30.05625</div><div class='input'><span class='fu'>einsum</span>(<span class='st'>"ijb,ijb-&gt;b"</span>, <span class='kw'>arr1</span>, <span class='kw'>arr1</span>)</div><div class='output co'>#&gt; [1] 36.88225 30.05625</div><div class='input'></div></pre>
+    <pre class="examples"><span class='r-in'><span class='va'>mat1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span>n <span class='op'>=</span> <span class='fl'>4</span> <span class='op'>*</span> <span class='fl'>8</span><span class='op'>)</span>, nrow <span class='op'>=</span> <span class='fl'>4</span>, ncol <span class='op'>=</span> <span class='fl'>8</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>mat2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span>n <span class='op'>=</span> <span class='fl'>8</span> <span class='op'>*</span> <span class='fl'>3</span><span class='op'>)</span>, nrow <span class='op'>=</span> <span class='fl'>8</span>, ncol <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Matrix Multiply</span></span>
+<span class='r-in'><span class='va'>mat1</span> <span class='op'><a href='https://rdrr.io/r/base/matmult.html'>%*%</a></span> <span class='va'>mat2</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>            [,1]       [,2]      [,3]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,] -0.2441351 -0.3344163 -2.348732</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2,]  0.5290658 -0.1933795 -2.828903</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [3,] -3.0636701 -1.9637461  2.942458</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [4,]  1.6505211  2.3222916  1.766643</span>
+<span class='r-in'><span class='fu'>einsum</span><span class='op'>(</span><span class='st'>"ij,jk -&gt; ik"</span>, <span class='va'>mat1</span>, <span class='va'>mat2</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>            [,1]       [,2]      [,3]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,] -0.2441351 -0.3344163 -2.348732</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2,]  0.5290658 -0.1933795 -2.828903</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [3,] -3.0636701 -1.9637461  2.942458</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [4,]  1.6505211  2.3222916  1.766643</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># einsum_generator() works just like einsum() but returns a performant function</span></span>
+<span class='r-in'><span class='va'>mat_mult</span> <span class='op'>&lt;-</span> <span class='fu'>einsum_generator</span><span class='op'>(</span><span class='st'>"ij,jk -&gt; ik"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>mat_mult</span><span class='op'>(</span><span class='va'>mat1</span>, <span class='va'>mat2</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>            [,1]       [,2]      [,3]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,] -0.2441351 -0.3344163 -2.348732</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2,]  0.5290658 -0.1933795 -2.828903</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [3,] -3.0636701 -1.9637461  2.942458</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [4,]  1.6505211  2.3222916  1.766643</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Diag</span></span>
+<span class='r-in'><span class='va'>mat_sq</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span>n <span class='op'>=</span> <span class='fl'>4</span> <span class='op'>*</span> <span class='fl'>4</span><span class='op'>)</span>, nrow <span class='op'>=</span> <span class='fl'>4</span>, ncol <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span><span class='op'>(</span><span class='va'>mat_sq</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] -2.2741149 -0.6650882  1.0650573  0.2841503</span>
+<span class='r-in'><span class='fu'>einsum</span><span class='op'>(</span><span class='st'>"ii-&gt;i"</span>, <span class='va'>mat_sq</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] -2.2741149 -0.6650882  1.0650573  0.2841503</span>
+<span class='r-in'><span class='fu'>einsum</span><span class='op'>(</span><span class='st'>"ii-&gt;ii"</span>, <span class='va'>mat_sq</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>           [,1]       [,2]     [,3]      [,4]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,] -2.274115  0.0000000 0.000000 0.0000000</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2,]  0.000000 -0.6650882 0.000000 0.0000000</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [3,]  0.000000  0.0000000 1.065057 0.0000000</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [4,]  0.000000  0.0000000 0.000000 0.2841503</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Trace</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span><span class='op'>(</span><span class='va'>mat_sq</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] -1.589995</span>
+<span class='r-in'><span class='fu'>einsum</span><span class='op'>(</span><span class='st'>"ii-&gt;"</span>, <span class='va'>mat_sq</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] -1.589995</span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Scalar product</span></span>
+<span class='r-in'><span class='va'>mat3</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span>n <span class='op'>=</span> <span class='fl'>4</span> <span class='op'>*</span> <span class='fl'>8</span><span class='op'>)</span>, nrow <span class='op'>=</span> <span class='fl'>4</span>, ncol <span class='op'>=</span> <span class='fl'>8</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>mat3</span> <span class='op'>*</span> <span class='va'>mat1</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>              [,1]        [,2]       [,3]       [,4]        [,5]        [,6]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,] -1.872306774  0.37712590 -0.4699239 -1.1321649 -0.22649590  0.49095945</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2,]  0.060432598 -0.12625140 -0.3670627 -1.8112706  0.02009136 -0.01382949</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [3,] -3.213028494 -0.31368369 -0.4146053 -1.3386305  0.23033230 -0.63420243</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [4,] -0.002918852  0.02234022  0.3498551  0.2900593 -0.97175477  1.23421318</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>              [,7]       [,8]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,] -0.669212804  0.3201439</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2,] -0.092216969  1.1878881</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [3,] -1.232348460 -0.9884328</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [4,]  0.004731501 -0.1404040</span>
+<span class='r-in'><span class='fu'>einsum</span><span class='op'>(</span><span class='st'>"ij,ij-&gt;ij"</span>, <span class='va'>mat3</span>, <span class='va'>mat1</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>              [,1]        [,2]       [,3]       [,4]        [,5]        [,6]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,] -1.872306774  0.37712590 -0.4699239 -1.1321649 -0.22649590  0.49095945</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2,]  0.060432598 -0.12625140 -0.3670627 -1.8112706  0.02009136 -0.01382949</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [3,] -3.213028494 -0.31368369 -0.4146053 -1.3386305  0.23033230 -0.63420243</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [4,] -0.002918852  0.02234022  0.3498551  0.2900593 -0.97175477  1.23421318</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>              [,7]       [,8]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,] -0.669212804  0.3201439</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2,] -0.092216969  1.1878881</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [3,] -1.232348460 -0.9884328</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [4,]  0.004731501 -0.1404040</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Transpose</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span><span class='op'>(</span><span class='va'>mat1</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>            [,1]        [,2]       [,3]         [,4]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,] -1.4000435  0.25531705 -2.4372636 -0.005571287</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2,]  0.6215527  1.14841161 -1.8218177 -0.247325302</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [3,] -0.2441996 -0.28270545 -0.5536994  0.628982042</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [4,]  2.0650249 -1.63098940  0.5124269 -1.863011492</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [5,] -0.5220125 -0.05260191  0.5429963 -0.914074827</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [6,]  0.4681544  0.36295126 -1.3045435  0.737776321</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [7,]  1.8885049 -0.09744510 -0.9358474 -0.015950311</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [8,] -0.8267890 -1.51239965  0.9353632  0.176488611</span>
+<span class='r-in'><span class='fu'>einsum</span><span class='op'>(</span><span class='st'>"ij-&gt;ji"</span>, <span class='va'>mat1</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>            [,1]        [,2]       [,3]         [,4]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,] -1.4000435  0.25531705 -2.4372636 -0.005571287</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2,]  0.6215527  1.14841161 -1.8218177 -0.247325302</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [3,] -0.2441996 -0.28270545 -0.5536994  0.628982042</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [4,]  2.0650249 -1.63098940  0.5124269 -1.863011492</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [5,] -0.5220125 -0.05260191  0.5429963 -0.914074827</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [6,]  0.4681544  0.36295126 -1.3045435  0.737776321</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [7,]  1.8885049 -0.09744510 -0.9358474 -0.015950311</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [8,] -0.8267890 -1.51239965  0.9353632  0.176488611</span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Batched L2 norm</span></span>
+<span class='r-in'><span class='va'>arr1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>mat1</span>, <span class='va'>mat3</span><span class='op'>)</span>, dim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span><span class='va'>mat1</span><span class='op'>)</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>mat1</span><span class='op'>^</span><span class='fl'>2</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>mat3</span><span class='op'>^</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 36.88225 30.05625</span>
+<span class='r-in'><span class='fu'>einsum</span><span class='op'>(</span><span class='st'>"ijb,ijb-&gt;b"</span>, <span class='va'>arr1</span>, <span class='va'>arr1</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 36.88225 30.05625</span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -261,11 +295,11 @@ generates efficient C++ code that can be one or two orders of magnitude faster t
 
       <footer>
       <div class="copyright">
-  <p>Developed by Constantin Ahlmann-Eltze.</p>
+  <p><p>Developed by Constantin Ahlmann-Eltze.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
@@ -273,6 +307,8 @@ generates efficient C++ code that can be one or two orders of magnitude faster t
 
   
 
+
+  
 
   </body>
 </html>
