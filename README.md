@@ -75,8 +75,8 @@ mat1 %*% mat2
 #> [8,]  3.0707573 -2.5552313 -1.5538108 -1.28101253
 ```
 
-The matrix multiplication example is straightforward example, and there
-is little benefit of using the einstein notation over the more familiar
+The matrix multiplication example is straightforward, and there is
+little benefit of using the Einstein notation over the more familiar
 matrix product expression. Furthermore, ‘einsum’ is a lot slower.
 
 However, ‘einsum’ truly shines when working with more than 2-dimensional
@@ -125,9 +125,9 @@ bench::mark(
 #> # A tibble: 3 x 6
 #>   expression            min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr>       <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 tensor            61.57µs  71.06µs    13525.    2.93KB     87.2
-#> 2 einsum            260.9µs  301.5µs     3195.    2.49KB     20.9
-#> 3 einsum_generator   2.99µs   4.13µs   215474.    2.49KB     21.5
+#> 1 tensor            61.22µs  71.23µs    12995.    2.93KB     84.5
+#> 2 einsum            248.1µs 266.25µs     3595.    2.49KB     25.2
+#> 3 einsum_generator   2.94µs   3.42µs   245344.    2.49KB     24.5
 ```
 
 Lastly, you can also generate C++ code if you need an efficient
@@ -170,5 +170,6 @@ cat(einsum_generator("abc, cd, ba -> d", compile_function = FALSE))
 
 # Credit
 
-This package is inspired by the equivalent function in
-[NumPy](https://numpy.org/doc/stable/reference/generated/numpy.einsum.html).
+This package is inspired by the
+[einsum](https://numpy.org/doc/stable/reference/generated/numpy.einsum.html)
+function in NumPy.

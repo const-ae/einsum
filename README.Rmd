@@ -62,7 +62,7 @@ which produces the same as the standard matrix multiplication
 ```{r}
 mat1 %*% mat2
 ```
-The matrix multiplication example is straightforward example, and there is little benefit of using the einstein notation over the more familiar matrix product expression. Furthermore, 'einsum' is a lot slower. 
+The matrix multiplication example is straightforward, and there is little benefit of using the Einstein notation over the more familiar matrix product expression. Furthermore, 'einsum' is a lot slower. 
 
 However, 'einsum' truly shines when working with more than 2-dimensional arrays, where it can be difficult to figure out the correct kind of tensor product:
 ```{r}
@@ -107,5 +107,5 @@ cat(einsum_generator("abc, cd, ba -> d", compile_function = FALSE))
 
 # Credit
 
-This package is inspired by the equivalent function in [NumPy](https://numpy.org/doc/stable/reference/generated/numpy.einsum.html).
+This package is inspired by the [einsum](https://numpy.org/doc/stable/reference/generated/numpy.einsum.html) function in NumPy.
 
