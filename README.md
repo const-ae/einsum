@@ -125,9 +125,9 @@ bench::mark(
 #> # A tibble: 3 x 6
 #>   expression            min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr>       <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 tensor            63.88µs   74.6µs    12935.    2.93KB     85.0
-#> 2 einsum           252.22µs 287.77µs     3316.    2.49KB     23.0
-#> 3 einsum_generator   3.01µs   4.54µs   222091.    2.49KB     22.2
+#> 1 tensor            61.57µs  71.06µs    13525.    2.93KB     87.2
+#> 2 einsum            260.9µs  301.5µs     3195.    2.49KB     20.9
+#> 3 einsum_generator   2.99µs   4.13µs   215474.    2.49KB     21.5
 ```
 
 Lastly, you can also generate C++ code if you need an efficient
@@ -135,7 +135,7 @@ implementation of some function, which you could (with proper credit)
 for example paste into your R package:
 
 ``` r
-# The C++ code underlying the tenxor product
+# The C++ code underlying the tensor product
 cat(einsum_generator("abc, cd, ba -> d", compile_function = FALSE))
 #> NumericVector einsum_impl_func(NumericVector array1, NumericVector array2, NumericVector array3){
 #> NumericVector size(4);

@@ -99,7 +99,7 @@ bench::mark(
 
 Lastly, you can also generate C++ code if you need an efficient implementation of some function, which you could (with proper credit) for example paste into your R package:
 ```{r}
-# The C++ code underlying the tenxor product
+# The C++ code underlying the tensor product
 cat(einsum_generator("abc, cd, ba -> d", compile_function = FALSE))
 ```
 
