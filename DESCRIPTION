@@ -4,8 +4,8 @@ Title: Einstein Summation
 Version: 0.1.0
 Authors@R: person("Constantin", "Ahlmann-Eltze", email = "artjom31415@googlemail.com", 
                role = c("aut", "cre"), comment = c(ORCID = "0000-0002-3762-068X"))
-Description: Einstein summation is a concise mathematical notation that 
-  implicitly sums over repeated indices of n-dimensional arrays. Many ordinary
+Description: The summation notation suggested by Einstein (1916) <doi:10.1002/andp.19163540702> is a 
+  concise mathematical notation that implicitly sums over repeated indices of n-dimensional arrays. Many ordinary
   matrix operations (e.g. transpose, matrix multiplication, scalar product, 'diag()', trace etc.)
   can be written using Einstein notation. The notation is particularly convenient for 
   expressing operations on arrays with more than two dimensions because the 
