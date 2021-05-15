@@ -24,6 +24,16 @@ to arrays with \code{as.array}.}
 returns the result of \code{Rcpp::cppFunction()} or the program as a
 string. Default: \code{TRUE}.}
 }
+\value{
+The \code{einsum()} function returns an array with one dimension for each index in the result
+ of the \code{equation_string}. For example \code{"ij,jk->ik"} produces a 2-dimensional array,
+ \code{"abc,cd,de->abe"} produces a 3-dimensional array.
+
+ The \code{einsum_generator()} function returns a function that takes one array for each
+ comma-separated input in the \code{equation_string} and returns the same result as \code{einsum()}.
+ Or if \code{compile_function = FALSE}, \code{einsum_generator()} function returns a string with the
+ C++ code for such a function.
+}
 \description{
 \loadmathjax
 Einstein summation is a convenient and concise notation for operations
@@ -52,7 +62,8 @@ can avoid confusion. The common summary of the Einstein  summation to
 "sum over duplicated indices" however is not a good mental model. A better rule of thumb is
 "sum over all indices not in the result".
 
-\emph{Note:} \code{einsum()} internally uses C++ code to speed up the calculations. However,
+\emph{Note:} \code{einsum()} internally uses C++ code to provide results quickly, the repeated
+parsing of the \code{equation_string} comes with some overhead. Thus,
 if you need to do the same calculation over and over again it can be worth to use
 \code{einsum_generator()} and call the returned the function. \code{einsum_generator()}
 generates efficient C++ code that can be one or two orders of magnitude faster than
