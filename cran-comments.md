@@ -11,3 +11,10 @@
 
 
 * This is a new release.
+
+## Resubmission
+This is a resubmission. In this version, I have:
+
+* Added a citation to DESCRIPTION
+
+* Added `\value` section to the einsum.Rd file, which explains what the function returns.
