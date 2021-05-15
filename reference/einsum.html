@@ -153,6 +153,15 @@ string. Default: <code>TRUE</code>.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>The <code>einsum()</code> function returns an array with one dimension for each index in the result
+ of the <code>equation_string</code>. For example <code>"ij,jk-&gt;ik"</code> produces a 2-dimensional array,
+ <code>"abc,cd,de-&gt;abe"</code> produces a 3-dimensional array.</p>
+<p>The <code>einsum_generator()</code> function returns a function that takes one array for each
+ comma-separated input in the <code>equation_string</code> and returns the same result as <code>einsum()</code>.
+ Or if <code>compile_function = FALSE</code>, <code>einsum_generator()</code> function returns a string with the
+ C++ code for such a function.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The following table show, how the Einstein notation abbreviates complex
@@ -176,7 +185,8 @@ Unlike NumPy, 'einsum' only supports the explicit mode. The explicit mode is mor
 can avoid confusion. The common summary of the Einstein  summation to
 "sum over duplicated indices" however is not a good mental model. A better rule of thumb is
 "sum over all indices not in the result".</p>
-<p><em>Note:</em> <code>einsum()</code> internally uses C++ code to speed up the calculations. However,
+<p><em>Note:</em> <code>einsum()</code> internally uses C++ code to provide results quickly, the repeated
+parsing of the <code>equation_string</code> comes with some overhead. Thus,
 if you need to do the same calculation over and over again it can be worth to use
 <code>einsum_generator()</code> and call the returned the function. <code>einsum_generator()</code>
 generates efficient C++ code that can be one or two orders of magnitude faster than
