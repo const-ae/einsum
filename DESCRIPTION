@@ -24,3 +24,5 @@ Imports:
     Rcpp,
     glue,
     mathjaxr
+URL: https://const-ae.github.io/einsum/
+BugReports: https://github.com/const-ae/einsum/issues
