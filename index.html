@@ -51,7 +51,14 @@
   <a href="news/index.html">Changelog</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/const-ae/einsum/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -73,8 +80,11 @@
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor" aria-hidden="true"></a>Installation</h2>
-<p>You can install the development version from <a href="https://github.com/einsum" class="external-link">GitHub</a> with:</p>
+<p>You can install the package from <a href="https://CRAN.R-project.org/package=einsum" class="external-link">CRAN</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"einsum"</span><span class="op">)</span></code></pre></div>
+<p>or if you want to use the development version from <a href="https://github.com/einsum" class="external-link">GitHub</a>:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
 <span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"const-ae/einsum"</span><span class="op">)</span></code></pre></div>
 </div>
@@ -82,14 +92,14 @@
 <h2 class="hasAnchor">
 <a href="#example" class="anchor" aria-hidden="true"></a>Example</h2>
 <p>Load the package:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">einsum</span><span class="op">)</span></code></pre></div>
-<p>Let’s make two matrices:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://const-ae.github.io/einsum/" class="external-link">einsum</a></span><span class="op">)</span></code></pre></div>
+<p>Let’s make two matrices:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mat1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">8</span> <span class="op">*</span> <span class="fl">4</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">8</span>, ncol <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>
 <span class="va">mat2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span> <span class="op">*</span> <span class="fl">4</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">4</span>, ncol <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></code></pre></div>
 <p>We can use <code><a href="reference/einsum.html">einsum()</a></code> to calculate the matrix product</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/einsum.html">einsum</a></span><span class="op">(</span><span class="st">"ij, jk -&gt; ik"</span>, <span class="va">mat1</span>, <span class="va">mat2</span><span class="op">)</span>
 <span class="co">#&gt;            [,1]       [,2]       [,3]        [,4]</span>
 <span class="co">#&gt; [1,] -0.5087677  0.6680792  0.2909357  0.49456493</span>
@@ -101,7 +111,7 @@
 <span class="co">#&gt; [7,] -0.5380896  0.8600228  0.4430880 -0.06022769</span>
 <span class="co">#&gt; [8,]  3.0707573 -2.5552313 -1.5538108 -1.28101253</span></code></pre></div>
 <p>which produces the same as the standard matrix multiplication</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mat1</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">mat2</span>
 <span class="co">#&gt;            [,1]       [,2]       [,3]        [,4]</span>
 <span class="co">#&gt; [1,] -0.5087677  0.6680792  0.2909357  0.49456493</span>
@@ -114,7 +124,7 @@
 <span class="co">#&gt; [8,]  3.0707573 -2.5552313 -1.5538108 -1.28101253</span></code></pre></div>
 <p>The matrix multiplication example is straightforward, and there is little benefit of using the Einstein notation over the more familiar matrix product expression. Furthermore, ‘einsum’ is a lot slower.</p>
 <p>However, ‘einsum’ truly shines when working with more than 2-dimensional arrays, where it can be difficult to figure out the correct kind of tensor product:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Make three n-dimensional arrays</span>
 <span class="va">arr1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">3</span> <span class="op">*</span> <span class="fl">9</span> <span class="op">*</span> <span class="fl">2</span><span class="op">)</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">9</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
 <span class="va">arr2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="fl">5</span><span class="op">)</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span>
@@ -123,16 +133,16 @@
 <span class="fu"><a href="reference/einsum.html">einsum</a></span><span class="op">(</span><span class="st">"abc, cd, ba -&gt; d"</span>, <span class="va">arr1</span>, <span class="va">arr2</span>, <span class="va">arr3</span><span class="op">)</span>
 <span class="co">#&gt; [1] -0.7015596 -4.0114655 -1.6420695 -3.4131292  0.7233701</span></code></pre></div>
 <p>The equivalent expression using tensor products (which are not intuitive) would look like this:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">tensor</span><span class="fu">::</span><span class="fu">tensor</span><span class="op">(</span><span class="fu">tensor</span><span class="fu">::</span><span class="fu">tensor</span><span class="op">(</span><span class="va">arr1</span>, <span class="va">arr2</span>, alongA <span class="op">=</span> <span class="fl">3</span>, alongB <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, <span class="va">arr3</span>, alongA <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">1</span><span class="op">)</span>, alongB <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] -0.7015596 -4.0114655 -1.6420695 -3.4131292  0.7233701</span></code></pre></div>
 <p>If you need to do the same computation repeatedly, you can use <code><a href="reference/einsum.html">einsum_generator()</a></code>, which generates and compiles an efficient C++ function for that calculation (to see the function code, set <code>compile_function=FALSE</code>). It can take a few seconds to compile the function, but the returned function can be one or two orders of magnitude faster than <code><a href="reference/einsum.html">einsum()</a></code>.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># einsum_generator returns a function</span>
 <span class="va">array_prod</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/einsum.html">einsum_generator</a></span><span class="op">(</span><span class="st">"abc, cd, ba -&gt; d"</span><span class="op">)</span>
 <span class="fu">array_prod</span><span class="op">(</span><span class="va">arr1</span>, <span class="va">arr2</span>, <span class="va">arr3</span><span class="op">)</span>
 <span class="co">#&gt; [1] -0.7015596 -4.0114655 -1.6420695 -3.4131292  0.7233701</span></code></pre></div>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">bench</span><span class="fu">::</span><span class="fu">mark</span><span class="op">(</span>
   tensor <span class="op">=</span> <span class="fu">tensor</span><span class="fu">::</span><span class="fu">tensor</span><span class="op">(</span><span class="fu">tensor</span><span class="fu">::</span><span class="fu">tensor</span><span class="op">(</span><span class="va">arr1</span>, <span class="va">arr2</span>, alongA <span class="op">=</span> <span class="fl">3</span>, alongB <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, 
                           <span class="va">arr3</span>, alongA <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">1</span><span class="op">)</span>, alongB <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>,
@@ -146,7 +156,7 @@
 <span class="co">#&gt; 2 einsum            248.1µs 266.25µs     3595.    2.49KB     25.2</span>
 <span class="co">#&gt; 3 einsum_generator   2.94µs   3.42µs   245344.    2.49KB     24.5</span></code></pre></div>
 <p>Lastly, you can also generate C++ code if you need an efficient implementation of some function, which you could (with proper credit) for example paste into your R package:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># The C++ code underlying the tensor product</span>
 <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="reference/einsum.html">einsum_generator</a></span><span class="op">(</span><span class="st">"abc, cd, ba -&gt; d"</span>, compile_function <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; NumericVector einsum_impl_func(NumericVector array1, NumericVector array2, NumericVector array3){</span>
@@ -189,7 +199,19 @@
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <div class="license">
+    <div class="links">
+<h2 data-toc-skip>Links</h2>
+<ul class="list-unstyled">
+<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=einsum">https://​cloud.r-project.org/​package=einsum</a>
+</li>
+<li>Browse source code at <br><a href="https://github.com/const-ae/einsum/">https://​github.com/​const-ae/​einsum/​</a>
+</li>
+<li>Report a bug at <br><a href="https://github.com/const-ae/einsum/issues">https://​github.com/​const-ae/​einsum/​issues</a>
+</li>
+</ul>
+</div>
+
+<div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
