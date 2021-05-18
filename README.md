@@ -22,8 +22,15 @@ not have a standardized name.
 
 ## Installation
 
-You can install the development version from
-[GitHub](https://github.com/einsum) with:
+You can install the package from
+[CRAN](https://CRAN.R-project.org/package=einsum) with:
+
+``` r
+install.packages("einsum")
+```
+
+or if you want to use the development version from
+[GitHub](https://github.com/einsum):
 
 ``` r
 # install.packages("devtools")
