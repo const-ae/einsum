@@ -83,6 +83,28 @@ test_that("einsum gives appropriate error messages", {
   expect_error(einsum("ij,jk -> i3k", mat1, mat2))
   expect_error(einsum("ij,j$k -> ik", mat1, mat2))
 
+  # Missing ->
+  expect_error(einsum("ij,jk", mat1, mat2))
+
+  # Multiple ->
+  expect_error(einsum("ij,jk->k->a", mat1, mat2))
+
+  # Wrong index in result
+  expect_error(einsum("ij,jk -> a", mat1, mat2))
+
+})
+
+test_that("einsum_generator gives appropriate error messages", {
+
+  # Missing ->
+  expect_error(einsum_generator("ij,jk"))
+
+  # Multiple ->
+  expect_error(einsum_generator("ij,jk->k->a"))
+
+  # Wrong index in result
+  expect_error(einsum_generator("ij,jk -> a"))
+
 })
 
 

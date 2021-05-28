@@ -105,6 +105,10 @@ einsum <- function(equation_string, ...){
   arrays <- lapply(arrays, as.array)
   equation_string <- gsub("\\s", "", equation_string)
 
+  if(length(grep("->", equation_string)) == 0){
+    stop("The 'equation_string' must contain `->`: ", equation_string)
+  }
+
   tmp <- strsplit(equation_string, "->")[[1]]
   result_string <- if(length(tmp) == 1) ""
   else if(length(tmp) == 2) tmp[2]
@@ -126,6 +130,10 @@ einsum <- function(equation_string, ...){
   lengths_vec <- lengths_vec[order(names(lengths_vec))]
 
   all_vars <- sort(unique(unlist(string_vec)))
+  if(! all(result_string_vec %in% all_vars)){
+    missing_result_indices <- setdiff(result_string_vec, all_vars)
+    stop("The result contains indices (", paste0(missing_result_indices, collapse = ", "), ") which are not on the left-hand side: ", equation_string)
+  }
   array_vars_list <- lapply(string_vec, function(st){
     vapply(st, function(s) which(all_vars == s) - 1L, FUN.VALUE = 0L)
   })
