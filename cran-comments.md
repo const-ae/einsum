@@ -1,20 +1,6 @@
-## Test environments
-* local R installation, R 4.0.3 on Mac OS
-* rhub (Ubuntu 20.04 R-release, Windows server 2008 R-devel, Fedora R-devel clang, Debian R-devel gcc)
-* win-builder (devel and release)
+
+This release adds the missing alias 'einsum-package' as raised by Kurt Hornik's email on 19/08/2023.
 
 ## R CMD check results
 
 0 errors or warnings
-
-1 NOTE about me as a maintainer and that this is a new submission
-
-
-* This is a new release.
-
-## Resubmission
-This is a resubmission. In this version, I have:
-
-* Added a citation to DESCRIPTION
-
-* Added `\value` section to the einsum.Rd file, which explains what the function returns.
