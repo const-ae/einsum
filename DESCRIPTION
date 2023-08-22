@@ -17,7 +17,7 @@ Suggests:
     testthat,
     covr
 RdMacros: mathjaxr
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3
 LinkingTo: 
     Rcpp
 Imports: 

@@ -8,7 +8,8 @@
 #' expressing operations on arrays with more than two dimensions because the
 #' respective operators ('tensor products') might not have a standardized name.
 #'
-#' @docType  package
+#' @docType package
+#' @aliases einsum-package
 #' @name einsum_package
 NULL
 

@@ -5,6 +5,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // einsum_impl_fast
 NumericVector einsum_impl_fast(IntegerVector lengths_vec, ListOf<IntegerVector> array_vars_list, IntegerVector not_result_vars_vec, IntegerVector result_vars_vec, ListOf<NumericVector> arrays);
 RcppExport SEXP _einsum_einsum_impl_fast(SEXP lengths_vecSEXP, SEXP array_vars_listSEXP, SEXP not_result_vars_vecSEXP, SEXP result_vars_vecSEXP, SEXP arraysSEXP) {

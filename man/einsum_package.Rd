@@ -3,6 +3,7 @@
 \docType{package}
 \name{einsum_package}
 \alias{einsum_package}
+\alias{einsum-package}
 \title{Einstein Summation}
 \description{
 Einstein summation is a concise mathematical notation that
