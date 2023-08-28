@@ -18,7 +18,7 @@ set.seed(1)
 
 <!-- badges: start -->
 [![R build status](https://github.com/const-ae/einsum/workflows/R-CMD-check/badge.svg)](https://github.com/const-ae/einsum/actions)
-[![Codecov test coverage](https://codecov.io/gh/const-ae/einsum/branch/master/graph/badge.svg)](https://codecov.io/gh/const-ae/einsum?branch=master)
+[![Codecov test coverage](https://codecov.io/gh/const-ae/einsum/branch/master/graph/badge.svg)](https://app.codecov.io/gh/const-ae/einsum?branch=master)
 <!-- badges: end -->
 
 [Einstein summation](https://en.wikipedia.org/wiki/Einstein_notation) is a concise mathematical notation that 
