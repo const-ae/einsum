@@ -12,7 +12,6 @@ Description: The summation notation suggested by Einstein (1916) <doi:10.1002/an
   respective operators ('tensor products') might not have a standardized name.
 License: MIT + file LICENSE
 Encoding: UTF-8
-SystemRequirements: C++11
 Suggests: 
     testthat,
     covr
