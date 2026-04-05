@@ -94,6 +94,51 @@ test_that("einsum gives appropriate error messages", {
 
 })
 
+test_that("einsum handles many indices via optimized pairwise contraction", {
+  n <- 4
+
+  # 3 unique indices: ab,bc->ac (standard matmul)
+  a1 <- array(rnorm(n^2), dim = c(n, n))
+  a2 <- array(rnorm(n^2), dim = c(n, n))
+  expect_equal(einsum("ab,bc->ac", a1, a2), a1 %*% a2)
+
+  # 5 unique indices: abcd,bcde->ae
+  a3 <- array(rnorm(n^4), dim = rep(n, 4))
+  a4 <- array(rnorm(n^4), dim = rep(n, 4))
+  res <- einsum("abcd,bcde->ae", a3, a4)
+  ref <- einsum_generator("abcd,bcde->ae")(a3, a4)
+  expect_equal(res, ref)
+
+  # 7 unique indices: abcdef,bcdefg->ag
+  a5 <- array(rnorm(n^6), dim = rep(n, 6))
+  a6 <- array(rnorm(n^6), dim = rep(n, 6))
+  res <- einsum("abcdef,bcdefg->ag", a5, a6)
+  ref <- einsum_generator("abcdef,bcdefg->ag")(a5, a6)
+  expect_equal(res, ref)
+
+  # result in non-standard order: abcd,bcde->ea
+  res <- einsum("abcd,bcde->ea", a3, a4)
+  ref <- einsum_generator("abcd,bcde->ea")(a3, a4)
+  expect_equal(res, ref)
+
+  # scalar result (all indices contracted): ab,ab->
+  res <- einsum("ab,ab->", a1, a2)
+  expect_equal(c(res), sum(a1 * a2))
+
+  # three tensors with many indices: ab,bc,cd->ad
+  a7 <- array(rnorm(n^2), dim = c(n, n))
+  res <- einsum("ab,bc,cd->ad", a1, a2, a7)
+  ref <- einsum_generator("ab,bc,cd->ad")(a1, a2, a7)
+  expect_equal(res, ref)
+
+  # four tensors: ab,bc,cd,de->ae
+  a8 <- array(rnorm(n^2), dim = c(n, n))
+  res <- einsum("ab,bc,cd,de->ae", a1, a2, a7, a8)
+  ref <- einsum_generator("ab,bc,cd,de->ae")(a1, a2, a7, a8)
+  expect_equal(res, ref)
+})
+
+
 test_that("einsum_generator gives appropriate error messages", {
 
   # Missing ->
