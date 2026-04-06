@@ -103,40 +103,25 @@
 einsum <- function(equation_string, ...){
   arrays <- list(...)
   arrays <- lapply(arrays, as.array)
-  equation_string <- gsub("\\s", "", equation_string)
 
-  if(length(grep("->", equation_string)) == 0){
-    stop("The 'equation_string' must contain `->`: ", equation_string)
-  }
-
-  tmp <- strsplit(equation_string, "->")[[1]]
-  result_string <- if(length(tmp) == 1) ""
-  else if(length(tmp) == 2) tmp[2]
-  else stop("the equation string contains more than one '->': ", equation_string)
-  lhs_strings <- tmp[1]
-  strings <- unlist(strsplit(lhs_strings, ","))
-  if(any(grepl("[^a-zA-Z]", strings)) || grepl("[^a-zA-Z]", result_string)) stop("'equation_string' contains a non alphabetical (a-z and A-Z) character.")
+  parsed <- parse_equation(equation_string)
+  strings <- parsed$strings
+  string_vec <- parsed$string_vec
+  result_string_vec <- parsed$result_string_vec
+  all_vars <- parsed$all_vars
 
   stopifnot("The number of strings on the left-hand side does not match the number of arrays" =
               length(strings) == length(arrays))
   stopifnot("Number of dimensions of array does not match the number of indices" =
               all(nchar(strings) == vapply(arrays, function(a)length(dim(a)), 0.0)))
 
-  result_string_vec <- strsplit(result_string, "")[[1]]
-  string_vec <- strsplit(strings, "")
-
   # Get the lengths of the indices as a named vector
   lengths_vec <- get_lengths_vec(strings, arrays)
 
-  all_vars <- sort(unique(unlist(string_vec)))
-  if(! all(result_string_vec %in% all_vars)){
-    missing_result_indices <- setdiff(result_string_vec, all_vars)
-    stop("The result contains indices (", paste0(missing_result_indices, collapse = ", "), ") which are not on the left-hand side: ", equation_string)
-  }
-
   # Try optimized pairwise contraction with BLAS matrix multiply
   if(length(arrays) >= 2) {
-    result <- einsum_pairwise(strings, string_vec, result_string_vec, arrays, lengths_vec)
+    path <- plan_contraction_path(string_vec, result_string_vec, lengths_vec)
+    result <- einsum_execute_path(path, string_vec, result_string_vec, arrays)
     if(!is.null(result)) return(result)
   }
 
@@ -153,16 +138,45 @@ einsum <- function(equation_string, ...){
 }
 
 
+# Execute a pre-planned contraction path using BLAS matrix multiply.
+# Returns NULL if any step is unsupported, so the caller can fall back
+# to the generic C++ engine.
+einsum_execute_path <- function(path, string_vec, result_string_vec, arrays) {
+  current_string_vec <- string_vec
+  current_arrays <- arrays
+
+  for(step in path) {
+    i <- step$i
+    j <- step$j
+
+    pair_result <- einsum_contract_pair(
+      current_string_vec[[i]], current_string_vec[[j]],
+      step$result_chars,
+      current_arrays[[i]], current_arrays[[j]]
+    )
+    if(is.null(pair_result)) return(NULL)
+
+    current_string_vec <- c(current_string_vec[-c(i, j)], list(step$result_chars))
+    current_arrays <- c(current_arrays[-c(i, j)], list(pair_result))
+  }
+
+  # Single tensor remains — permute to final result order if needed
+  res <- current_arrays[[1]]
+  final_chars <- current_string_vec[[1]]
+  if(length(result_string_vec) > 0 && length(final_chars) > 0 &&
+     !identical(final_chars, result_string_vec)) {
+    res <- aperm(res, match(result_string_vec, final_chars))
+  }
+  res
+}
+
+
 # Contract two tensors via BLAS matrix multiply.
 # Returns NULL if the contraction pattern is not supported (e.g. repeated
 # indices within a single tensor, or batch dimensions).
-einsum_contract_pair <- function(str1, str2, result_str, arr1, arr2) {
-  chars1 <- strsplit(str1, "")[[1]]
-  chars2 <- strsplit(str2, "")[[1]]
-  result_chars <- strsplit(result_str, "")[[1]]
+einsum_contract_pair <- function(chars1, chars2, result_chars, arr1, arr2) {
 
   # Repeated indices within a tensor (e.g. "ii") need the C++ path
-
   if(length(chars1) != length(unique(chars1)) || length(chars2) != length(unique(chars2)))
     return(NULL)
 
@@ -173,7 +187,6 @@ einsum_contract_pair <- function(str1, str2, result_str, arr1, arr2) {
   free2 <- setdiff(chars2, chars1)
 
   # Batch dimensions (index in both tensors AND result) not yet supported
-
   if(length(batch) > 0) return(NULL)
 
   # Permute arr1 to (free1..., contracted...) and arr2 to (contracted..., free2...)
@@ -213,62 +226,6 @@ einsum_contract_pair <- function(str1, str2, result_str, arr1, arr2) {
     res <- aperm(res, match(result_chars, out_chars))
   }
 
-  res
-}
-
-
-# Greedy pairwise contraction: repeatedly contract the cheapest pair of
-# tensors until a single result remains.  Each pairwise step uses
-# einsum_contract_pair (BLAS matmul).  Returns NULL if any step is
-# unsupported, so the caller can fall back to the generic C++ engine.
-einsum_pairwise <- function(strings, string_vec, result_string_vec, arrays, lengths_vec) {
-  while(length(arrays) > 1) {
-    n <- length(arrays)
-
-    # Greedy: pick the pair whose contraction touches the fewest elements
-    best_cost <- Inf
-    best_i <- 1L
-    best_j <- 2L
-    for(i in 1:(n - 1)) {
-      for(j in (i + 1):n) {
-        ij_chars <- unique(c(string_vec[[i]], string_vec[[j]]))
-        cost <- prod(lengths_vec[ij_chars])
-        if(cost < best_cost) {
-          best_cost <- cost
-          best_i <- i
-          best_j <- j
-        }
-      }
-    }
-
-    i <- best_i
-    j <- best_j
-
-    # Intermediate result keeps indices still needed by remaining tensors or final result
-    other_chars <- unique(unlist(string_vec[-c(i, j)]))
-    needed <- union(result_string_vec, other_chars)
-    ij_chars <- unique(c(string_vec[[i]], string_vec[[j]]))
-    intermediate_chars <- intersect(ij_chars, needed)
-    intermediate_str <- paste0(intermediate_chars, collapse = "")
-
-    pair_result <- einsum_contract_pair(
-      strings[i], strings[j], intermediate_str,
-      arrays[[i]], arrays[[j]]
-    )
-    if(is.null(pair_result)) return(NULL)
-
-    strings    <- c(strings[-c(i, j)], intermediate_str)
-    string_vec <- c(string_vec[-c(i, j)], list(intermediate_chars))
-    arrays     <- c(arrays[-c(i, j)], list(pair_result))
-  }
-
-  # Single tensor remains — permute to final result order if needed
-  res <- arrays[[1]]
-  final_chars <- string_vec[[1]]
-  if(length(result_string_vec) > 0 && length(final_chars) > 0 &&
-     !identical(final_chars, result_string_vec)) {
-    res <- aperm(res, match(result_string_vec, final_chars))
-  }
   res
 }
 
