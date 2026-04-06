@@ -102,18 +102,18 @@ test_that("einsum handles many indices via optimized pairwise contraction", {
   a2 <- array(rnorm(n^2), dim = c(n, n))
   expect_equal(einsum("ab,bc->ac", a1, a2), a1 %*% a2)
 
-  # 5 unique indices: abcd,bcde->ae
+  # 5 unique indices: cabd,ebdc->ae
   a3 <- array(rnorm(n^4), dim = rep(n, 4))
   a4 <- array(rnorm(n^4), dim = rep(n, 4))
-  res <- einsum("abcd,bcde->ae", a3, a4)
-  ref <- einsum_generator("abcd,bcde->ae")(a3, a4)
+  res <- einsum("cabd,ebdc->ae", a3, a4)
+  ref <- einsum_generator("cabd,ebdc->ae")(a3, a4)
   expect_equal(res, ref)
 
-  # 7 unique indices: abcdef,bcdefg->ag
+  # 7 unique indices: abecdf,bcdgef->ag
   a5 <- array(rnorm(n^6), dim = rep(n, 6))
   a6 <- array(rnorm(n^6), dim = rep(n, 6))
-  res <- einsum("abcdef,bcdefg->ag", a5, a6)
-  ref <- einsum_generator("abcdef,bcdefg->ag")(a5, a6)
+  res <- einsum("abecdf,bcdgef->ag", a5, a6)
+  ref <- einsum_generator("abecdf,bcdgef->ag")(a5, a6)
   expect_equal(res, ref)
 
   # result in non-standard order: abcd,bcde->ea
@@ -129,6 +129,12 @@ test_that("einsum handles many indices via optimized pairwise contraction", {
   a7 <- array(rnorm(n^2), dim = c(n, n))
   res <- einsum("ab,bc,cd->ad", a1, a2, a7)
   ref <- einsum_generator("ab,bc,cd->ad")(a1, a2, a7)
+  expect_equal(res, ref)
+
+  # three tensors with 5 unique indices
+  a25 <- array(rnorm(n^3), dim = c(n, n, n))
+  res <- einsum("ab,bcd,ec->ade", a1, a25, a2)
+  ref <- einsum_generator("ab,bcd,ec->ade")(a1, a25, a2)
   expect_equal(res, ref)
 
   # four tensors: ab,bc,cd,de->ae
