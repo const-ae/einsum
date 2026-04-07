@@ -119,7 +119,7 @@ einsum <- function(equation_string, ...){
   lengths_vec <- get_lengths_vec(strings, arrays)
 
   # Try optimized pairwise contraction with BLAS matrix multiply
-  if(length(arrays) >= 2) {
+  if(can_use_pairwise(string_vec)) {
     path <- plan_contraction_path(string_vec, result_string_vec, lengths_vec)
     result <- einsum_execute_path(path, string_vec, result_string_vec, arrays)
     if(!is.null(result)) return(result)

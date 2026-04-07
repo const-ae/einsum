@@ -44,18 +44,23 @@ einsum_generator <- function(equation_string, compile_function = TRUE){
   }
 
   # --- Computation code ---
-  has_repeated <- any(vapply(string_vec, function(sv) length(sv) != length(unique(sv)), FALSE))
-  use_pairwise <- length(strings) >= 3 && !has_repeated
+  # Try pairwise code generation for 3+ tensors without repeated indices.
+  # For ≤2 tensors, repeated indices, or if pairwise path encounters
+  # unsupported patterns (e.g. batch dimensions), fall back to the
+  # original single-loop-nest code generation.
+  use_pairwise <- can_use_pairwise(string_vec) && length(strings) >= 3
+  computation_code <- NULL
 
   if(use_pairwise) {
-    # Plan contraction path with uniform dummy sizes (ranks pairs by index count)
     dummy_lengths <- rep(10, length(all_vars))
     names(dummy_lengths) <- all_vars
     path <- plan_contraction_path(string_vec, result_string_vec, dummy_lengths)
-
     computation_code <- generate_pairwise_cpp(
       path, string_vec, variable_names, result_string_vec, all_vars
     )
+  }
+
+  if(!is.null(computation_code)) {
     code <- paste0(method_decl, "\n", size_vec, "\n\n", computation_code, "\n}")
   } else {
     # --- Original single-loop-nest code generation ---

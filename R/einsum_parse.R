@@ -33,6 +33,14 @@ parse_equation <- function(equation_string) {
 }
 
 
+# Check whether pairwise contraction can be applied: requires 2+ tensors
+# and no repeated indices within any single tensor (e.g. "ii").
+can_use_pairwise <- function(string_vec) {
+  length(string_vec) >= 2 &&
+    !any(vapply(string_vec, function(sv) length(sv) != length(unique(sv)), FALSE))
+}
+
+
 # Greedy contraction path: at each step, pick the tensor pair whose
 # contraction involves the fewest total elements.
 # Returns a list of steps, each containing: i, j (positions in the current
