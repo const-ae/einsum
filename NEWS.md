@@ -1,3 +1,12 @@
+# einsum 0.2.0
+
+* Optimize `einsum()` via BLAS matrix multiply and greedy pairwise contraction
+  for 3+ tensor equations.
+* Optimize `einsum_generator()` to emit pairwise C++ code for 3+ tensor
+  equations instead of a single loop nest.
+* Refactor shared equation parsing into `einsum_parse.R`.
+* Update GitHub Actions workflows to current runners and actions.
+
 # einsum 0.1.0
 
 Initial release of the `einsum` R package.
