@@ -1,5 +1,6 @@
 
 #' @rdname einsum
+#' @importFrom utils head
 #' @export
 einsum_generator <- function(equation_string, compile_function = TRUE){
   parsed <- parse_equation(equation_string)

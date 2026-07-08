@@ -3,4 +3,5 @@
 export(einsum)
 export(einsum_generator)
 importFrom(Rcpp,sourceCpp)
+importFrom(utils,head)
 useDynLib(einsum, .registration = TRUE)
